@@ -6,8 +6,8 @@
  *
  * @author Thomas Dressler
  * @copyright Thomas Dressler 2011-2016
- * @version 4.0.7
- * @date 2016-10-03
+ * @version 4.0.8
+ * @date 2016-10-06
  */
 
 include_once(__DIR__ . "/../module_helper.php");
@@ -162,7 +162,7 @@ class CUL extends T2DModule
      * Set status variable Buffer
      * @param String $val
      */
-    protected function SetBuffer($Name='Buffer',$Data)
+    protected function SetBuffer($Data,$Name='Buffer')
     {
         $id = $this->GetIDForIdent($Name);
         SetValueString($id, $Data);
