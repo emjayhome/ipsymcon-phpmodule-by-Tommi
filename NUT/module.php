@@ -225,9 +225,9 @@ class NUT extends T2DModule
      */
     private function SetNomPower($val)
     {
-    	$this->debug(__FUNCTION__, "Set NomPower:$val");
+        $this->debug(__FUNCTION__, "Set NomPower:$val");
         IPS_SetProperty($this->InstanceID, 'NomPower',(Integer)$val);
-        IPS_ApplyChanges($this->InstanceID);
+        parent::ApplyChanges();
     }
     //------------------------------------------------------------------------------
     /**
@@ -275,14 +275,14 @@ class NUT extends T2DModule
 
     //--------------------------------------------------------
     /**
-     * Set Nominal Power in W
+     * Set UPS Name as set in NUT
      * @param  int
      */
     private function SetUPSname($val)
     {
-    	$this->debug(__FUNCTION__, "Upsname:$val");
+        $this->debug(__FUNCTION__, "UPS Name:$val");
         IPS_SetProperty($this->InstanceID, 'UPSname',$val);
-        IPS_ApplyChanges($this->InstanceID);
+        parent::ApplyChanges();
     }
 
     //------------------------------------------------------------------------------
@@ -447,7 +447,6 @@ class NUT extends T2DModule
                 $ups = $res[1];
                 $this->SetUPSname($ups);
             }
-
         }
 
         //query named UPS
