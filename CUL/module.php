@@ -6,8 +6,8 @@
  *
  * @author Thomas Dressler
  * @copyright Thomas Dressler 2011-2016
- * @version 4.0.8
- * @date 2016-10-06
+ * @version 4.0.9
+ * @date 2016-10-27
  */
 
 include_once(__DIR__ . "/../module_helper.php");
@@ -488,7 +488,7 @@ class CUL extends T2DModule
             } elseif (preg_match("/^\s*(ON|OFF)\s*\$/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'OneWire HMS Emulation:' . $res[1]);
             } //------ Init messages --------------
-            elseif (preg_match("/^(V\s*[0-9\.]+)\s*CSM.*/", $line, $res)) {
+            elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL).*/", $line, $res)) {
                 $vers = $res[1];
                 $versid = $this->GetIDForIdent('Version');
                 if ($versid) SetValueString($versid,$vers);
