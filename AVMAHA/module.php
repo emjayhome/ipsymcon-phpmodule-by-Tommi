@@ -6,8 +6,8 @@
  *
  * @author Thomas Dressler
  * @copyright Thomas Dressler 2013-2016
- * @version 1.3
- * @date 2016-04-10
+ * @version 4.0.4
+ * @date 2016-10-27
  */
 
 include_once(__DIR__ . "/../module_helper.php");
@@ -482,8 +482,8 @@ class AVMAHA extends T2DModule
                 //bit8=temperature sensor
                 if (isset($device->temperature)) {
                     $temperatur = ((integer)$device->temperature->celsius) / 10;
+                    /* offset is already included in value */
                     $offset = ((integer)$device->temperature->offset) / 10;
-                    $temperatur = $temperatur + $offset;
                     $caps = 'Temp';
                     $data['Temp'] = $temperatur;
                     $txt = sprintf(" Temperature:(Temp:%02.1fC, Offset:%02.1f) ;", $temperatur, $offset);
