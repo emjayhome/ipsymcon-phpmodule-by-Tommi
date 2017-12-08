@@ -746,6 +746,60 @@ class CUL extends T2DModule
 
     //------------------------------------------------------------------------------
     /**
+     * Parse Intertechno/Elro CUL Hex record
+     *
+     * @code
+     * # i05055126
+     * # iAAAAACSS
+     * 
+     * @endcode
+     * - AAAAA Adress
+     * - C code
+     * - SS Signal
+     *
+     * @param $line
+     */
+    private function parse_IT($line)
+    {
+        $data=array();
+        $data['Class'] = __CLASS__."-IT";
+        $caps='Id;Typ;';
+
+        if(strlen($line) == 9) {
+            $dev = substr($line, 1, 5);
+            $code = substr($line, 6, 1);
+            
+            $data['Typ']="IT";
+            $data['Id']=$dev;
+            switch ($code) {
+
+                case "1":   $status="ON";
+                            $data['Switch']=$status;
+                            $caps.="Switch;";
+                    break;
+                case "4":   $status="OFF";
+                            $data['Switch']=$status;
+                            $caps.="Switch;";
+                    break;
+                default: break;
+            }//switch
+            //signal
+            $rssi=$this->GetSignal(substr($line,7,2));
+            $caps.="Signal;";
+            $data['Signal']=$rssi;
+
+            //send
+            $this->SendSwitchData($data,$caps);
+        } else {
+
+            IPS_LogMessage(__CLASS__ . "-IT: Unknown data");
+            $this->incError();
+
+        }//if strlen
+    }//function
+
+    //------------------------------------------------------------------------------
+    /**
      * Parse HMS CUL Hex Record
      @code
      # H37AE01240000
