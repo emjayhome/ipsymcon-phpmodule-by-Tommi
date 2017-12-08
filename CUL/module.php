@@ -446,6 +446,9 @@ class CUL extends T2DModule
         } //------------------FHT---------------------------------
         elseif (preg_match("/^(T[0-9A-F]{8,12})\s*\$/", $line, $res)) {
             $this->parse_FHT($res[1]);
+        } //------------------IT/Elro---------------------------------
+        elseif (preg_match("/^(i[0-9A-F]{8})\s*/", $line, $res)) {
+            $this->parse_IT($res[1]);
         } //---------------------Wetter(WS300)-----------------------------------------
         elseif (preg_match("/^(K[0-9A-F]{6,16})\s*\$/", $line, $res)) {
             $this->parse_WS300($res[1]);
