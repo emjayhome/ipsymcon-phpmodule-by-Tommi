@@ -1563,6 +1563,46 @@ class CUL extends T2DModule
                 }
 
                 break;
+            case 'IT':
+                switch ($cap) {
+                    case 'Switch':
+                        $this->debug(__FUNCTION__,"Action: Switch $val");
+                        $itcode = $this->SwitchStatus($val) ? "FF" : "F0";
+                        break;  
+                    default:
+                        IPS_LogMessage(__CLASS__, __FUNCTION__.'invalid Intertechno Action Command ' . $cap);
+                        return;
+                } 
+                $this->debug(__FUNCTION__, "ITcode: $itcode");
+                $culaddr='';
+                if (strlen($Device)==5) {
+                    foreach  (str_split($Device) as $x) {
+                        switch($x) {
+                            case '0':
+                                $culaddr.='00';
+                                break;
+                            case '1':
+                                $culaddr.='0F';
+                                break;
+                            case '4':
+                                $culaddr.='F0';
+                                break;
+                            case '5':
+                                $culaddr.='FF';
+                                break;
+                            default:
+                                IPS_LogMessage(__CLASS__, __FUNCTION__.'invalid Intertechno device: ' . $Device);
+                                return;
+                        }
+                    }
+                    $cul = 'is' . $culaddr . $itcode;
+                    $this->debug(__FUNCTION__, "Send to Intertechno Device $Device ($culaddr): $cul");
+                    $this->SendText($cul . "\r\n");
+                }else{
+                    IPS_LogMessage(__CLASS__, __FUNCTION__ ."Invalid Device $Device Len<>5: ".strlen($Device));
+                }
+
+                break;       
             default:
                 IPS_LogMessage(__CLASS__, __FUNCTION__ . "unsupported Type $type");
         }
