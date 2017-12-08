@@ -468,7 +468,7 @@ class CUL extends T2DModule
             } elseif (preg_match("/^\s*(ON|OFF)\s*\$/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'OneWire HMS Emulation:' . $res[1]);
             } //------ Init messages --------------
-            elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL).*/", $line, $res)) {
+            elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|a-culfw).*/", $line, $res)) {
                 $vers = $res[1];
                 $versid = $this->GetIDForIdent('Version');
                 if ($versid) SetValueString($versid,$vers);
