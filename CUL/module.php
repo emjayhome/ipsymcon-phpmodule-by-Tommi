@@ -766,7 +766,7 @@ class CUL extends T2DModule
     {
         $data=array();
         $data['Class'] = __CLASS__."-IT";
-        $caps='Id;Typ;';
+        $caps='Switch:1;Id;Typ;';
 
         if(strlen($line) == 9) {
             $dev = substr($line, 1, 5);
