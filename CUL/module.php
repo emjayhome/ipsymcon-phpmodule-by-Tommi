@@ -470,6 +470,9 @@ class CUL extends T2DModule
                 $this->debug(__FUNCTION__, 'OneWire detected Devices:' . $res[1]);
             } elseif (preg_match("/^\s*(ON|OFF)\s*\$/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'OneWire HMS Emulation:' . $res[1]);
+            // IT response
+            } elseif (preg_match("/^(is[0-9A-F]{12})\s*/", $line, $res)) {
+                $this->debug(__FUNCTION__, 'IT response: ' . $line);
             } //------ Init messages --------------
             elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|a-culfw).*/", $line, $res)) {
                 $vers = $res[1];
@@ -1598,6 +1601,7 @@ class CUL extends T2DModule
                     $cul = 'is' . $culaddr . $itcode;
                     $this->debug(__FUNCTION__, "Send to Intertechno Device $Device ($culaddr): $cul");
                     $this->SendText($cul . "\r\n");
+                    IPS_Sleep(500);
                 }else{
                     IPS_LogMessage(__CLASS__, __FUNCTION__ ."Invalid Device $Device Len<>5: ".strlen($Device));
                 }
