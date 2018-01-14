@@ -39,8 +39,9 @@ class TechemDev extends T2DModule
         'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Current Readout', 'profile' => '~String', "pos" => 3),
         'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Current Value', "profile" => '', "pos" => 4),
         'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => '', "pos" => 4),
-        'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 5),
-        'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Heater Temperature', "profile" => '~Temperature', "pos" => 6),
+        'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Total Value', "profile" => '', "pos" => 5),        
+        'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 6),
+        'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Heater Temperature', "profile" => '~Temperature', "pos" => 7),
         'Signal' => array("ident" => 'Signal', "type" => self::VT_Integer, "name" => 'Signal', 'profile' => 'Signal', "pos" => 40,"hidden" => true)
     );
     ///[capvars]
@@ -243,6 +244,7 @@ class TechemDev extends T2DModule
                 case 'Temp2':
                 case 'ValueLastHWM':
                 case 'ValueNowHWM':
+                case 'ValueTotalHWM':
                     $fv = (float)$s;
                     SetValueFloat($vid, $fv);
                     break;

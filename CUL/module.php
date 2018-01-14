@@ -632,11 +632,8 @@ class CUL extends T2DModule
         $data['Class'] = __CLASS__."-TECHEM";
         $caps = "Id;Typ;";
         $length = hexdec(substr($line, 1, 2));
-        $this->debug(__FUNCTION__, "TECHEM: length: $length");
         $type = substr($line, 17, 4);
-        $this->debug(__FUNCTION__, "TECHEM: type: $type");
         $addr = $this->swapEndianness(substr($line, 9, 8));
-        $this->debug(__FUNCTION__, "TECHEM: address: $addr");
         $data['Id'] = $addr;
 
         switch ($type) {
@@ -654,17 +651,11 @@ class CUL extends T2DModule
                 $data['ValueNow'] = hexdec($raw_value_cur);
                 $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));
                 $data['Temp1'] = hexdec($raw_temp1)/100.0;
-                $data['Temp2'] = hexdec($raw_temp2)/100.0;        
-                $this->debug(__FUNCTION__, "TECHEM: Last Date: ". $data['DateLast']);
-                $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
-                $this->debug(__FUNCTION__, "TECHEM: Current Date: ". $data['DateNow']);
-                $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
-                $this->debug(__FUNCTION__, "TECHEM: TEMP1: ".$data['Temp1']." Grad");
-                $this->debug(__FUNCTION__, "TECHEM: TEMP2: ".$data['Temp2']." Grad");               
+                $data['Temp2'] = hexdec($raw_temp2)/100.0;                      
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
-                $caps .= 'DateLast;ValueLastHWM;DateNow;ValueNowHWM;';
+                $caps .= 'DateLast;ValueLastHWM;DateNow;ValueNowHWM;ValueTotalHWM;';
                 $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
@@ -672,11 +663,8 @@ class CUL extends T2DModule
                 $data['ValueLastHWM'] = hexdec($raw_value_last)/10.0;
                 $data['DateLast'] = date('d.m.Y', $this->parseLastDate($raw_date_last));
                 $data['ValueNowHWM'] = hexdec($raw_value_cur)/10.0;
-                $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));       
-                $this->debug(__FUNCTION__, "TECHEM: Last Date: ". $data['DateLast']);
-                $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLastHWM']);
-                $this->debug(__FUNCTION__, "TECHEM: Current Date: ". $data['DateNow']);
-                $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNowHWM']);
+                $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));  
+                $data['ValueTotalHWM'] = $data['ValueLastHWM'] + $data['ValueNowHWM'];
                 break;
             default:
                 $this->debug(__FUNCTION__, "TECHEM: unknown type: $type");
