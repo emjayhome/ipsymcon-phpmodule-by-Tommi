@@ -502,7 +502,7 @@ class CUL extends T2DModule
                 $this->parse_Techem($res[1]);
             }
         } //---------------Techem HWM-------------------------------
-        if (preg_match("/^(b..446850[\d]{8}7462.*)\s*\$/", $line, $res)) {
+        elseif (preg_match("/^(b..446850[\d]{8}7462.*)\s*\$/", $line, $res)) {
             $this->parse_Techem($res[1]);
         } //---------------EM1000-----------------------------------
         elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
