@@ -5,6 +5,7 @@
 		{ "name": "Category", "type": "ValidationTextBox", "caption": "Category Name" },
 		{ "name": "ParentCategory", "type": "NumberSpinner", "caption": "Category Parent" },
 		{ "name": "UseOW", "type": "CheckBox", "caption": "Use 1Wire HMS emulation" },
+		{ "name": "UseTechem", "type": "CheckBox", "caption": "Enable Techem reception" },
         { "type": "Label", "label": "--- optional settings ---------" },
 		{ "name": "AutoCreate", "type": "CheckBox", "caption": "Enable automatic creation of new devices" }
 
