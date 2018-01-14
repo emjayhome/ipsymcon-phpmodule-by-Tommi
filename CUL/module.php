@@ -567,6 +567,24 @@ class CUL extends T2DModule
         return implode('', array_reverse(str_split($hex, 2)));
     }
 
+    private function parseLastDate($hex) {
+        $bin = hexdec($hex);
+        $day = $bin & 0x1F;
+        $month = ($bin>>5) & 0xF;
+        $year = ($bin>>9) & 0x3F;
+        $timestamp = strtotime("$day.$month.$year");
+        return $timestamp;
+    }
+
+    private function parseCurDate($hex) {
+        $bin = hexdec($hex);
+        $day = $bin & 0x1F;
+        $month = ($bin>>5) & 0xF;
+        $year = ($bin>>9) & 0x3F;
+        $timestamp = strtotime("$day.$month". date("Y"));
+        return $timestamp;
+    }
+
     //------------------------------------------------------------------------------
     /**
      * Parse Techem CUL Hex Record
@@ -616,8 +634,13 @@ class CUL extends T2DModule
         $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
         $this->debug(__FUNCTION__, "TECHEM: data: $raw_date_last $raw_value_last $raw_date_cur $raw_value_cur");
         $data['ValueLast'] = hexdec($raw_value_last);
+        $data['DateLast'] = $this->parseLastDate($raw_value_last);
         $data['ValueNow'] = hexdec($raw_value_cur);
+        $data['DateNow'] = $this->parseCurDateDate($raw_value_cur);
+
+        $this->debug(__FUNCTION__, "TECHEM: Last Date: ". date($data['DateLast']));
         $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
+        $this->debug(__FUNCTION__, "TECHEM: Current Date: ". date($data['DateNow']));
         $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
 
         switch ($type) {
