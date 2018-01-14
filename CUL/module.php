@@ -573,7 +573,6 @@ class CUL extends T2DModule
         $month = ($bin>>5) & 0xF;
         $year = ($bin>>9) & 0x3F;
         $timestamp = strtotime("$day.$month.$year");
-        $this->debug(__FUNCTION__, "TECHEM: last date: $day.$month.$year");
         return $timestamp;
     }
 
@@ -582,7 +581,6 @@ class CUL extends T2DModule
         $day = ($bin>>4) & 0x1F;
         $month = ($bin>>9) & 0x0F;
         $timestamp = strtotime("$day.$month.". date("Y"));
-        $this->debug(__FUNCTION__, "TECHEM: current date: $day.$month". date("Y"));
         return $timestamp;
     }
 
@@ -635,9 +633,9 @@ class CUL extends T2DModule
         $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
         $this->debug(__FUNCTION__, "TECHEM: data: $raw_date_last $raw_value_last $raw_date_cur $raw_value_cur");
         $data['ValueLast'] = hexdec($raw_value_last);
-        $data['DateLast'] = $this->parseLastDate($raw_date_last);
+        $data['DateLast'] = date('d.m.Y', $this->parseLastDate($raw_date_last));
         $data['ValueNow'] = hexdec($raw_value_cur);
-        $data['DateNow'] = $this->parseCurDate($raw_date_cur);
+        $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));
 
         $this->debug(__FUNCTION__, "TECHEM: Last Date: ". date($data['DateLast']));
         $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
