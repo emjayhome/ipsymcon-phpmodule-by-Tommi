@@ -615,13 +615,22 @@ class CUL extends T2DModule
         $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
         $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
         $this->debug(__FUNCTION__, "TECHEM: data: $raw_date_last $raw_value_last $raw_date_cur $raw_value_cur");
+        $data['ValueLast'] = hexdec($raw_value_last);
+        $data['ValueNow'] = hexdec($raw_value_cur);
+        $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
+        $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
 
         switch ($type) {
             case "6980": // Heizkostenverteiler
                 $data['Typ'] = "HKV";
                 $raw_temp1 = $this->swapEndianness(substr($line, 45, 4));
                 $raw_temp2 = $this->swapEndianness(substr($line, 49, 4)); 
-                $this->debug(__FUNCTION__, "TECHEM: temps: $raw_temp1 $raw_temp2");               
+                $caps .= 'Temp1;Temp2;';
+                $data['Temp1'] = hexdec($raw_temp1)/100;
+                $data['Temp2'] = hexdec($raw_temp1)/100;
+                $this->debug(__FUNCTION__, "TECHEM: temps: $raw_temp1 $raw_temp2");
+                $this->debug(__FUNCTION__, "TECHEM: TEMP1: ".$data['Temp1']."°C");
+                $this->debug(__FUNCTION__, "TECHEM: TEMP2: ".$data['Temp2']."°C");               
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
