@@ -68,6 +68,7 @@ class CUL extends T2DModule
         $this->RegisterPropertyBoolean('Debug', false);
         $this->RegisterPropertyBoolean('Active', false);
         $this->RegisterPropertyBoolean('UseOW', false);
+        $this->RegisterPropertyBoolean('UseTechem', false);
         
         //status Vars
         $this->RegisterVariableString('LastUpdate', 'Last Update', "", -2);
@@ -156,6 +157,18 @@ class CUL extends T2DModule
     }
 
     //------------------------------------------------------------------------------
+    /**
+     * Get Property UseTechem
+     * proerty to enable Techem reception
+     * @return bool
+     */
+    private function GetUseTechem()
+    {
+        return (bool)IPS_GetProperty($this->InstanceID, 'UseTechem');
+
+    }
+
+    //------------------------------------------------------------------------------
     //---Events
     //------------------------------------------------------------------------------
     /**
@@ -207,7 +220,10 @@ class CUL extends T2DModule
 
         //retrieve 1wire property
         $ow_use_hms = $this->GetUseOw();
-        
+  
+        //retrieve Techem property
+        $use_techem = $this->GetUseTechem();
+
         //query actual Modus 
         $this->SendText("X\r\n");
         IPS_Sleep(1000);
@@ -243,6 +259,12 @@ class CUL extends T2DModule
         if (($ow_use_hms) && ($version)) {
             $this->init_onewire();
         }
+
+        // Enable Techem on capable devices if enabled
+        if ((use_techem) && ($version)) {
+            $this->init_techem();
+        }
+
         $this->debug(__FUNCTION__, "Version:$version, Modus: $modus");
         $this->SetLocalBuffer('');
 
@@ -282,6 +304,42 @@ class CUL extends T2DModule
         SetValueString($lmid, "");
     }
     
+    //------------------------------------------------------------------------------
+    /**
+     * Send commands to enable Techem reception
+     */
+    private function init_techem()
+    {
+        $this->debug(__FUNCTION__, "Entered");
+        //get message variable
+        $lmid = $this->GetIDForIdent('AuxMessage');
+
+        //query actual Modus 
+        $this->SendText("br\r\n");
+        IPS_Sleep(1000);
+        $modus = GetValueString($lmid);
+        if ($modus <> "TMODE") {
+            //send command for wireless M-BUS T mode 
+            SetValueString($lmid, "");
+            $this->SendText("brt\r\n");
+            IPS_Sleep(1000);
+            //Modus abfragen
+            //$this->SendText("\r\n");
+            //IPS_Sleep(1000);
+            $modus = GetValueString($lmid);
+            //log action
+            if ($modus == "TMODE") {
+                $this->debug(__FUNCTION__, "Techem Modus set successfully");
+            } else {
+                IPS_LogMessage(__CLASS__, "Set Techem Modus failed");
+            }//modus
+
+        } else {
+            $this->debug(__FUNCTION__, "Techem Modus already set");
+        }//modus
+
+        SetValueString($lmid, "");
+    }
 
     //------------------------------------------------------------------------------
     //Data Interfaces
@@ -437,8 +495,11 @@ class CUL extends T2DModule
 
 
         $this->debug(__FUNCTION__, "Line:$line");
-        //---------------EM1000-----------------------------------
-        if (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
+        //---------------Techem-----------------------------------
+        if (preg_match("/^(b..446850[\d]{8}).*\s*\$/", $line, $res)) {
+            $this->parse_Techem($res[1]);
+        } //---------------EM1000-----------------------------------
+        elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
             $this->parse_EM1000($res[1]);
         } //-----------------------FS20
         elseif (preg_match("/^(F[0-9A-F]{8,12})\s*\$/", $line, $res)) {
@@ -502,6 +563,139 @@ class CUL extends T2DModule
     //internal functions
     //------------------------------------------------------------------------------
 
+    //------------------------------------------------------------------------------
+    /**
+     * Parse Techem CUL Hex Record
+     *
+     * @code
+     * # For KS300:
+       # KFFTTHTWHWWRRFRSS
+     * # K1775910400E96AF4 :T: 17.5  H: 49  W: 0.0  R: 2793.0  IR: no  Wi: 0  RSSI: -86
+     * # For S300TH:
+     * # KAATTHTHHSS
+     * # K11245265
+     * # K41815177F4
+     * # 0123456789012345
+     * @endcode
+     * -AA Address,Type 1,2
+     * -T Temp Byteorder MSB 6,3,4
+     * -H Hum Byteorder MSB 7,8(,5)
+     * -W Wind Byteorder 9,10,7
+     * -R Raincounter Byteorder 14,11,12
+     * -F Flags 1,2,13
+     * -S Signal 15,16
+     *
+     * Data must be read backwards
+     * @param $line
+     */
+    private function parse_Techem($line)
+    {
+/*
+        $tlist = array("0" => "temp",
+            "1" => "T/F",
+            "2" => "Rain",
+            "3" => "Wind",
+            "4" => "Indoor",
+            "5" => "brightness",
+            "6" => "pyro",
+            "7" => "T/F");
+
+        $a = str_split($line);
+        $len = strlen($line) - 1; //last is cr
+        $firstbyte = hexdec($a[1]);
+        $typebyte = $a[2];
+        $dev = (string)($firstbyte & 7);
+        $typid = $tlist[$typebyte];
+        $typebyte = $typebyte & 7;
+        $varids = null;
+        $val = "no data";
+
+        $data = array();
+        $caps = 'Id;Typ;';
+        $data['Id'] = $dev;
+        $data['Class'] = __CLASS__."-WS300";
+
+        if (($firstbyte & 7) == 7) {
+            if (($typebyte == 0) && ($len > 6)) {           # temp
+                $sgn = ($firstbyte & 8) ? -1 : 1;
+                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
+                $val = "T: $tmp";
+                $caps .= 'Temp';
+                $data['Temp'] = $tmp;
+                $data['Typ'] = 'PS50';
+            }
+
+            if (($typebyte == 1) && ($len > 8)) {           # temp/hum
+                $sgn = ($firstbyte & 8) ? -1 : 1;
+                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
+                $hum = ($a[7] . $a[8]);
+                $val = "T: $tmp  H: $hum";
+                $caps .= 'Temp;Hum;';
+                $data['Temp'] = $tmp;
+                $data['Hum'] = $hum;
+                $data['Typ'] = 'WS300 T/F';
+
+            }
+            //signal
+            if ($len > 9) {
+                $rssi = $this->GetSignal(substr($line, 9, 2));
+                $data['Signal'] = $rssi;
+                $caps .= 'Signal;';
+
+            }
+
+        } else {
+
+            if ($len < 12) {                 #  S300TH
+                $sgn = ($firstbyte & 8) ? -1 : 1;
+                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
+                $hum = ($a[7] . $a[8]);
+                $val = "T: $tmp  H: $hum";
+                $caps .= 'Temp;Hum;';
+                $data['Temp'] = $tmp;
+                $data['Hum'] = $hum;
+                $data['Typ'] = "WS300 T/F";
+
+                //signal
+                if ($len == 10) {
+                    $rssi = $this->GetSignal(substr($line, 9, 2));
+                    $data['Signal'] = $rssi;
+                    $caps .= 'Signal;';
+
+                }
+            } elseif ($len > 13) {          # KS300/2
+
+                $rainc = hexdec($a[14] . $a[11] . $a[12]);
+                $wnd = intval($a[9] . $a[10] . $a[7]) / 10;
+                $hum = intval($a[8] . $a[5]);
+                $tmp = intval($a[6] . $a[3] . $a[4]) / 10;
+                if ($a[1] & 0xC) $tmp = $tmp * -1;
+                $ir = ((intval($a[1]) & 2)) ? "YES" : "NO";
+                $caps .= 'Temp;Hum;Wind;RainCounter;IsRaining;';
+                $data['Temp'] = $tmp;
+                $data['Hum'] = $hum;
+                $data['Wind'] = $wnd;
+                $data['RainCounter'] = $rainc;
+                $data['IsRaining'] = $ir;
+                $data['Typ'] = "KS300";
+                $val = "T: $tmp  H: $hum  W: $wnd  R: $rainc  IR: $ir";
+                //signal
+                if ($len == 16) {
+                    $rssi = $this->GetSignal(substr($line, 15, 2));
+                    $data['Signal'] = $rssi;
+                    $caps .= 'Signal;';
+                }
+
+            } else {
+                $this->debug(__FUNCTION__, "WS300: Invalid record: $line");
+            }
+        }
+        if (!$data['Typ']) $data['Typ'] = ($typid ? $typid : 'unknown');
+        $text = "Dev $dev ($typid): $val";*/
+        $this->debug(__FUNCTION__, "Techem:" . $line);
+        //$this->SendWSData($data, $caps);
+    }//function TECHEM
+    
     /**
      * Parse EM1000 CUL Hex Record
      *
