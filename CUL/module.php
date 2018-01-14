@@ -1321,15 +1321,17 @@ class CUL extends T2DModule
         }//for
         if (!$found) {
             //no free instance available, have to create a new one
-            if ($this->ReadPropertyBoolean('AutoCreate') == true) {
-                //new instance needed
-                $this->debug(__FUNCTION__, 'CREATE NEW Device');
-                $instID = $this->CreateTechemDevice($data, $caps);
-                $found = true;
-            } else {
-                $this->debug(__FUNCTION__, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
-                IPS_LogMessage($class, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
-            }//if autocreate
+            if($typ == "HWM") {
+                if ($this->ReadPropertyBoolean('AutoCreate') == true) {
+                    //new instance needed
+                    $this->debug(__FUNCTION__, 'CREATE NEW Device');
+                    $instID = $this->CreateTechemDevice($data, $caps);
+                    $found = true;
+                } else {
+                    $this->debug(__FUNCTION__, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
+                    IPS_LogMessage($class, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
+                }//if autocreate
+            }
         }//if found
 
         if ($found && ($instID > 0)) {
