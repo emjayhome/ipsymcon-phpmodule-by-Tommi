@@ -1348,6 +1348,69 @@ class CUL extends T2DModule
         }//found
     }//function
 
+    //--------------------------------------------------------
+    /**
+     * Create a new TechemDev instance and set its properties
+     * @param array $data parsed record
+     * @param String $caps String semicolon seperated capabilities of this device
+     * @return int new Instance ID
+     */
+    private function CreateTechemDevice($data, $caps)
+    {
+        $instID = 0;
+        $class = $data['Class'];
+        $Device = $data['Id'];
+        $typ = $data['Typ'];
+        $ModuleID = $this->module_interfaces['TechemDev'];
+        if (IPS_ModuleExists($ModuleID)) {
+            //return $result;
+            $this->debug(__FUNCTION__, 'Device:' . $Device);
+
+            $instID = IPS_CreateInstance($ModuleID);
+            if ($instID > 0) {
+                IPS_SetProperty($instID, 'DeviceID', $Device);
+                IPS_SetProperty($instID, 'Class', $class);
+                IPS_SetProperty($instID, 'Typ', $typ);
+                IPS_SetProperty($instID, 'CapList', $caps);
+                IPS_SetProperty($instID, 'Debug', $this->isDebug()); //follow debug settings from splitter
+                IPS_SetName($instID, "$typ Device " . $Device);
+                $ident = $class . "_".$typ."_".$Device;
+                $ident = preg_replace("/\W/", "_", $ident);//nicht-Buchstaben/zahlen entfernen
+                IPS_SetIdent($instID, $ident);
+                IPS_ConnectInstance($instID, $this->InstanceID);
+                IPS_ApplyChanges($instID);
+
+                //set category
+                $cat = $this->GetCategory();
+                $pcat = $this->GetParentCategory();
+                $ident = preg_replace("/\W/", "_", $cat);//fix naming
+                $catid = @IPS_GetObjectIDByIdent($ident, $pcat);
+                if ($catid == 0) {
+                    $catid = IPS_CreateCategory();
+                    IPS_SetName($catid, $cat);
+                    if (IPS_SetIdent($catid, $ident) && IPS_SetParent($catid, $pcat)) {
+                        IPS_LogMessage($class, "Category $cat Ident $ident ($catid) created");
+                    } else {
+                        IPS_LogMessage($class, "Category $cat Ident $ident ($catid) FAILED");
+                    }
+
+                }
+                $this->debug(__FUNCTION__, "Category:$catid");
+                if (!IPS_SetParent($instID, $catid)) {
+                    $this->debug(__FUNCTION__, "SetParent Instance $instID to Cat $catid failed, Dropping instance");
+                    IPS_DeleteInstance($instID);
+                    $instID = 0;
+                } else {
+                    $this->debug(__FUNCTION__, 'New ID:' . $instID);
+                }//parent
+                if (IPS_HasChanges($instID)) IPS_ApplyChanges($instID);
+            } else {
+                $this->debug(__FUNCTION__, 'Instance  is not created!');
+            }//if instID
+        }//module exists
+        return $instID;
+    }//function
+
     //------------------------------------------------------------------------------
     /**
      * Forward weather data to WSDev instances
