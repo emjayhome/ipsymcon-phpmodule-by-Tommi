@@ -573,6 +573,7 @@ class CUL extends T2DModule
         $month = ($bin>>5) & 0xF;
         $year = ($bin>>9) & 0x3F;
         $timestamp = strtotime("$day.$month.$year");
+        $this->debug(__FUNCTION__, "TECHEM: last date: $day.$month.$year");
         return $timestamp;
     }
 
@@ -582,6 +583,7 @@ class CUL extends T2DModule
         $month = ($bin>>5) & 0xF;
         $year = ($bin>>9) & 0x3F;
         $timestamp = strtotime("$day.$month". date("Y"));
+        $this->debug(__FUNCTION__, "TECHEM: current date: $day.$month". date("Y"));
         return $timestamp;
     }
 
