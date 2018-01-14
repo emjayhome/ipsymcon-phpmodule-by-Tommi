@@ -664,19 +664,19 @@ class CUL extends T2DModule
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
-                $caps .= 'DateLast;ValueLast;DateNow;ValueNow;';
+                $caps .= 'DateLast;ValueLastHWM;DateNow;ValueNowHWM;';
                 $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
                 $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
-                $data['ValueLast'] = hexdec($raw_value_last);
+                $data['ValueLastHWM'] = hexdec($raw_value_last)/10.0;
                 $data['DateLast'] = date('d.m.Y', $this->parseLastDate($raw_date_last));
-                $data['ValueNow'] = hexdec($raw_value_cur);
+                $data['ValueNowHWM'] = hexdec($raw_value_cur)/10.0;
                 $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));       
                 $this->debug(__FUNCTION__, "TECHEM: Last Date: ". $data['DateLast']);
-                $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
+                $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLastHWM']);
                 $this->debug(__FUNCTION__, "TECHEM: Current Date: ". $data['DateNow']);
-                $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
+                $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNowHWM']);
                 break;
             default:
                 $this->debug(__FUNCTION__, "TECHEM: unknown type: $type");

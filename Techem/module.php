@@ -35,8 +35,10 @@ class TechemDev extends T2DModule
         'Name' => array("ident" => 'Name', "type" => self::VT_String, "name" => 'Name', 'profile' => '~String', "pos" => 0),
         'DateLast' => array("ident" => 'DateLast', "type" => self::VT_String, "name" => 'Last Readout', 'profile' => '~String', "pos" => 1),
         'ValueLast' => array("ident" => 'ValueLast', "type" => self::VT_Integer, "name" => 'Last Value', "profile" => '', "pos" => 2),
+        'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Last Value', "profile" => '', "pos" => 2),
         'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Current Readout', 'profile' => '~String', "pos" => 3),
         'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Current Value', "profile" => '', "pos" => 4),
+        'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => '', "pos" => 4),
         'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 5),
         'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Heater Temperature', "profile" => '~Temperature', "pos" => 6),
         'Signal' => array("ident" => 'Signal', "type" => self::VT_Integer, "name" => 'Signal', 'profile' => 'Signal', "pos" => 40,"hidden" => true)
@@ -237,8 +239,10 @@ class TechemDev extends T2DModule
                     SetValueInteger($vid, $iv);
                     break;
                 //float types
-                case 'Temp1'://InputVolt
-                case 'Temp2'://Output Volt
+                case 'Temp1':
+                case 'Temp2':
+                case 'ValueLastHWM':
+                case 'ValueNowHWM':
                     $fv = (float)$s;
                     SetValueFloat($vid, $fv);
                     break;
