@@ -1,0 +1,12 @@
+{
+	"id": "{c90288df-3938-4e1c-9758-a46dfced60f3}",
+	"name": "TechemDev",
+	"type": 3,
+	"vendor": "EmJay",
+	"aliases": ["Techem Device"],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": ["{89f5c46c-f96a-4551-ae4e-71f880f57584}"],
+	"prefix": "TED"
+}
+

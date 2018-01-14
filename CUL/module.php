@@ -666,131 +666,20 @@ class CUL extends T2DModule
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
                 $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
-                $raw_temp1 = $this->swapEndianness(substr($line, 45, 4));
-                $raw_temp2 = $this->swapEndianness(substr($line, 49, 4)); 
                 $data['ValueLast'] = hexdec($raw_value_last);
                 $data['DateLast'] = date('d.m.Y', $this->parseLastDate($raw_date_last));
                 $data['ValueNow'] = hexdec($raw_value_cur);
-                $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));
-                $data['Temp1'] = hexdec($raw_temp1)/100.0;
-                $data['Temp2'] = hexdec($raw_temp2)/100.0;        
+                $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));       
                 $this->debug(__FUNCTION__, "TECHEM: Last Date: ". $data['DateLast']);
                 $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
                 $this->debug(__FUNCTION__, "TECHEM: Current Date: ". $data['DateNow']);
                 $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
-                $this->debug(__FUNCTION__, "TECHEM: TEMP1: ".$data['Temp1']." Grad");
-                $this->debug(__FUNCTION__, "TECHEM: TEMP2: ".$data['Temp2']." Grad");
                 break;
             default:
                 $this->debug(__FUNCTION__, "TECHEM: unknown type: $type");
         }
 
-        $this->debug(__FUNCTION__, "TECHEM: type: ".$data['Typ']);
-
-/*
-        $tlist = array("0" => "temp",
-            "1" => "T/F",
-            "2" => "Rain",
-            "3" => "Wind",
-            "4" => "Indoor",
-            "5" => "brightness",
-            "6" => "pyro",
-            "7" => "T/F");
-
-        $a = str_split($line);
-        $len = strlen($line) - 1; //last is cr
-        $firstbyte = hexdec($a[1]);
-        $typebyte = $a[2];
-        $dev = (string)($firstbyte & 7);
-        $typid = $tlist[$typebyte];
-        $typebyte = $typebyte & 7;
-        $varids = null;
-        $val = "no data";
-
-        $data = array();
-        $caps = 'Id;Typ;';
-        $data['Id'] = $dev;
-        $data['Class'] = __CLASS__."-WS300";
-
-        if (($firstbyte & 7) == 7) {
-            if (($typebyte == 0) && ($len > 6)) {           # temp
-                $sgn = ($firstbyte & 8) ? -1 : 1;
-                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
-                $val = "T: $tmp";
-                $caps .= 'Temp';
-                $data['Temp'] = $tmp;
-                $data['Typ'] = 'PS50';
-            }
-
-            if (($typebyte == 1) && ($len > 8)) {           # temp/hum
-                $sgn = ($firstbyte & 8) ? -1 : 1;
-                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
-                $hum = ($a[7] . $a[8]);
-                $val = "T: $tmp  H: $hum";
-                $caps .= 'Temp;Hum;';
-                $data['Temp'] = $tmp;
-                $data['Hum'] = $hum;
-                $data['Typ'] = 'WS300 T/F';
-
-            }
-            //signal
-            if ($len > 9) {
-                $rssi = $this->GetSignal(substr($line, 9, 2));
-                $data['Signal'] = $rssi;
-                $caps .= 'Signal;';
-
-            }
-
-        } else {
-
-            if ($len < 12) {                 #  S300TH
-                $sgn = ($firstbyte & 8) ? -1 : 1;
-                $tmp = $sgn * ($a[6] . $a[3] . "." . $a[4]);
-                $hum = ($a[7] . $a[8]);
-                $val = "T: $tmp  H: $hum";
-                $caps .= 'Temp;Hum;';
-                $data['Temp'] = $tmp;
-                $data['Hum'] = $hum;
-                $data['Typ'] = "WS300 T/F";
-
-                //signal
-                if ($len == 10) {
-                    $rssi = $this->GetSignal(substr($line, 9, 2));
-                    $data['Signal'] = $rssi;
-                    $caps .= 'Signal;';
-
-                }
-            } elseif ($len > 13) {          # KS300/2
-
-                $rainc = hexdec($a[14] . $a[11] . $a[12]);
-                $wnd = intval($a[9] . $a[10] . $a[7]) / 10;
-                $hum = intval($a[8] . $a[5]);
-                $tmp = intval($a[6] . $a[3] . $a[4]) / 10;
-                if ($a[1] & 0xC) $tmp = $tmp * -1;
-                $ir = ((intval($a[1]) & 2)) ? "YES" : "NO";
-                $caps .= 'Temp;Hum;Wind;RainCounter;IsRaining;';
-                $data['Temp'] = $tmp;
-                $data['Hum'] = $hum;
-                $data['Wind'] = $wnd;
-                $data['RainCounter'] = $rainc;
-                $data['IsRaining'] = $ir;
-                $data['Typ'] = "KS300";
-                $val = "T: $tmp  H: $hum  W: $wnd  R: $rainc  IR: $ir";
-                //signal
-                if ($len == 16) {
-                    $rssi = $this->GetSignal(substr($line, 15, 2));
-                    $data['Signal'] = $rssi;
-                    $caps .= 'Signal;';
-                }
-
-            } else {
-                $this->debug(__FUNCTION__, "WS300: Invalid record: $line");
-            }
-        }
-        if (!$data['Typ']) $data['Typ'] = ($typid ? $typid : 'unknown');
-        $text = "Dev $dev ($typid): $val";*/
-        $this->debug(__FUNCTION__, "Techem:" . $line);
-        //$this->SendWSData($data, $caps);
+        $this->SendTechemData($data, $caps);
     }//function TECHEM
     
     /**
@@ -1394,6 +1283,69 @@ class CUL extends T2DModule
         $this->debug(__FUNCTION__, $text);
         $this->SendEnData($data, $caps);
 
+    }//function
+
+    //------------------------------------------------------------------------------
+    /**
+     * Forward data to TechemDev instances
+     * Create one if needed
+     * @param array $data
+     * @param string $caps
+     */
+    private function SendTechemData($data, $caps)
+    {
+        //parsing was OK, start distributing
+        $this->debug(__FUNCTION__, 'Prepare');
+        $class = $data['Class'];
+        $id = $data['Id'];
+        $typ = $data['Typ'];
+        $found = false;
+        $instID = 0;
+        $instances = IPS_GetInstanceListByModuleID($this->module_interfaces['TechemDev']);
+        foreach ($instances as $instID) {
+            $I = IPS_GetInstance($instID);
+            $iid = (String)IPS_GetProperty($instID, 'DeviceID');
+            $ityp = (String)IPS_GetProperty($instID, 'Typ');
+            $iclass = (String)IPS_GetProperty($instID, 'Class');
+            if ($I['ConnectionID'] == $this->InstanceID) { //my child
+                if (($iid == $id) && ($iclass == $class) && ($ityp == $typ)) {
+                    $this->debug(__FUNCTION__, 'Use existing ID:' . $instID);
+                    $found = true;
+                    break;
+                }//if destdevice
+
+            }//if
+        }//for
+        if (!$found) {
+            //no free instance available, have to create a new one
+            if ($this->ReadPropertyBoolean('AutoCreate') == true) {
+                //new instance needed
+                $this->debug(__FUNCTION__, 'CREATE NEW Device');
+                $instID = $this->CreateTechemDevice($data, $caps);
+                $found = true;
+            } else {
+                $this->debug(__FUNCTION__, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
+                IPS_LogMessage($class, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
+            }//if autocreate
+        }//if found
+
+        if ($found && ($instID > 0)) {
+            //send record to children
+            $json = json_encode(
+                array("DataID" => $this->module_interfaces['TE-RX'],
+                    "DeviceID" => $data['Id'],
+                    "Typ" => $data['Typ'],
+                    "Class" => $class,
+                    "TEData" => $data,
+                )
+            );
+
+            $this->debug(__FUNCTION__, $json);
+            @$this->SendDataToChildren($json);
+            $datum = date('Y-m-d H:i:s', time());
+            $vid = @$this->GetIDForIdent('LastUpdate');
+            if ($vid) SetValueString($vid, $datum);
+        }//found
     }//function
 
     //------------------------------------------------------------------------------

@@ -1,0 +1,9 @@
+{
+	"elements":
+	[
+		{ "name": "DeviceID", "type": "ValidationTextBox", "caption": "DeviceID" },
+		{ "name": "Typ", "type": "ValidationTextBox", "caption": "Typ" },
+        { "name": "Class", "type": "ValidationTextBox", "caption": "Creator" }
+	]
+
+}

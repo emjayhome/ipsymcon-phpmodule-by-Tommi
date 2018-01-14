@@ -152,6 +152,7 @@ class T2DModule extends IPSModule
         "WSDEV" => "{4228137D-EDE3-41BF-9B0A-CA0DB1AC6353}", // WS Device
         "SwitchDev" => "{F2FC0924-2CE9-4067-9DB5-D228F0CCF4AD}", //Switch Device
         "EnergyDev" => "{F0302960-A22D-40CC-8994-B7C40F045023}", //Energy Device
+        "TechemDev" => "{c90288df-3938-4e1c-9758-a46dfced60f3}", // Techem Device
 
         //Data Points
         "FS20-TX" => "{122F60FB-BE1B-4CAB-A427-2613E4C82CBA}", //from FS20 Device
@@ -164,6 +165,7 @@ class T2DModule extends IPSModule
         "IO-TX" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", //to VirtIO
         "EN-TX" => "{63056B9B-EF14-4F65-8235-D292391AE591}", //from Energy Device
         "EN-RX" => "{3C60BF34-7DD3-4234-B865-AF1606BB267C}", //to Energy Device
+        "TE-RX" => "{89f5c46c-f96a-4551-ae4e-71f880f57584}", // to Techem Device
     );
 
     /**
