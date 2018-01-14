@@ -579,10 +579,9 @@ class CUL extends T2DModule
 
     private function parseCurDate($hex) {
         $bin = hexdec($hex);
-        $day = $bin & 0x1F;
-        $month = ($bin>>5) & 0xF;
-        $year = ($bin>>9) & 0x3F;
-        $timestamp = strtotime("$day.$month". date("Y"));
+        $day = ($bin>>4) & 0x1F;
+        $month = ($bin>>9) & 0x0F;
+        $timestamp = strtotime("$day.$month.". date("Y"));
         $this->debug(__FUNCTION__, "TECHEM: current date: $day.$month". date("Y"));
         return $timestamp;
     }
