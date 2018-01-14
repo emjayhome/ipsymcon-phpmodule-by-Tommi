@@ -261,7 +261,7 @@ class CUL extends T2DModule
         }
 
         // Enable Techem on capable devices if enabled
-        if ((use_techem) && ($version)) {
+        if (($use_techem) && ($version)) {
             $this->init_techem();
         }
 
