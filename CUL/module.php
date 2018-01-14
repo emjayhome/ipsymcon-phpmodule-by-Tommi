@@ -610,10 +610,18 @@ class CUL extends T2DModule
         $addr = $this->swapEndianness(substr($line, 9, 8));
         $this->debug(__FUNCTION__, "TECHEM: address: $addr");
         $data['Id'] = $addr;
+        $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
+        $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
+        $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
+        $raw_value_cur = $this->swapEndianness(substr($line, 41, 4));
+        $this->debug(__FUNCTION__, "TECHEM: data: $raw_date_last $raw_value_last $raw_date_cur $raw_value_cur");
 
         switch ($type) {
             case "6980": // Heizkostenverteiler
                 $data['Typ'] = "HKV";
+                $raw_temp1 = $this->swapEndianness(substr($line, 45, 4));
+                $raw_temp2 = $this->swapEndianness(substr($line, 49, 4)); 
+                $this->debug(__FUNCTION__, "TECHEM: temps: $raw_temp1 $raw_temp2");               
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
