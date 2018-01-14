@@ -495,12 +495,15 @@ class CUL extends T2DModule
 
 
         $this->debug(__FUNCTION__, "Line:$line");
-        //---------------Techem-----------------------------------
-        if (preg_match("/^(b..446850[\d]{8}.*)\s*\$/", $line, $res)) {
+        //---------------Techem HKV-------------------------------
+        if (preg_match("/^(b..446850[\d]{8}6980.*)\s*\$/", $line, $res)) {
             $num = mt_rand(1,100);
             if($num<=10) { // Process only 10% of incoming data to lower CPU load
                 $this->parse_Techem($res[1]);
             }
+        } //---------------Techem HWM-------------------------------
+        if (preg_match("/^(b..446850[\d]{8}7462.*)\s*\$/", $line, $res)) {
+            $this->parse_Techem($res[1]);
         } //---------------EM1000-----------------------------------
         elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
             $this->parse_EM1000($res[1]);
