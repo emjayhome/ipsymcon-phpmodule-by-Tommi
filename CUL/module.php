@@ -626,11 +626,11 @@ class CUL extends T2DModule
                 $raw_temp1 = $this->swapEndianness(substr($line, 45, 4));
                 $raw_temp2 = $this->swapEndianness(substr($line, 49, 4)); 
                 $caps .= 'Temp1;Temp2;';
-                $data['Temp1'] = hexdec($raw_temp1)/100;
-                $data['Temp2'] = hexdec($raw_temp1)/100;
+                $data['Temp1'] = hexdec($raw_temp1)/100.0;
+                $data['Temp2'] = hexdec($raw_temp2)/100.0;
                 $this->debug(__FUNCTION__, "TECHEM: temps: $raw_temp1 $raw_temp2");
-                $this->debug(__FUNCTION__, "TECHEM: TEMP1: ".$data['Temp1']."°C");
-                $this->debug(__FUNCTION__, "TECHEM: TEMP2: ".$data['Temp2']."°C");               
+                $this->debug(__FUNCTION__, "TECHEM: TEMP1: ".$data['Temp1']." Grad");
+                $this->debug(__FUNCTION__, "TECHEM: TEMP2: ".$data['Temp2']." Grad");               
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
