@@ -563,7 +563,7 @@ class CUL extends T2DModule
     //internal functions
     //------------------------------------------------------------------------------
 
-    function swapEndianness($hex) {
+    private function swapEndianness($hex) {
         return implode('', array_reverse(str_split($hex, 2)));
     }
 
@@ -607,7 +607,7 @@ class CUL extends T2DModule
         $this->debug(__FUNCTION__, "TECHEM: length: $length");
         $type = substr($line, 17, 4);
         $this->debug(__FUNCTION__, "TECHEM: type: $type");
-        $addr = swapEndianness(substr($line, 9, 8));
+        $addr = $this->swapEndianness(substr($line, 9, 8));
         $this->debug(__FUNCTION__, "TECHEM: address: $addr");
         $data['Id'] = $addr;
 
