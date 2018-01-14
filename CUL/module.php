@@ -637,9 +637,9 @@ class CUL extends T2DModule
         $data['ValueNow'] = hexdec($raw_value_cur);
         $data['DateNow'] = date('d.m.Y', $this->parseCurDate($raw_date_cur));
 
-        $this->debug(__FUNCTION__, "TECHEM: Last Date: ". date($data['DateLast']));
+        $this->debug(__FUNCTION__, "TECHEM: Last Date: ". $data['DateLast']);
         $this->debug(__FUNCTION__, "TECHEM: Last Value: ".$data['ValueLast']);
-        $this->debug(__FUNCTION__, "TECHEM: Current Date: ". date($data['DateNow']));
+        $this->debug(__FUNCTION__, "TECHEM: Current Date: ". $data['DateNow']);
         $this->debug(__FUNCTION__, "TECHEM: Current Value: ".$data['ValueNow']);
 
         switch ($type) {
