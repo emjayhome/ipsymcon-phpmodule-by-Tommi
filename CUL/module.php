@@ -496,7 +496,7 @@ class CUL extends T2DModule
 
         $this->debug(__FUNCTION__, "Line:$line");
         //---------------Techem-----------------------------------
-        if (preg_match("/^(b..446850[\d]{8}).*\s*\$/", $line, $res)) {
+        if (preg_match("/^(b..446850[\d]{8}.*)\s*\$/", $line, $res)) {
             $this->parse_Techem($res[1]);
         } //---------------EM1000-----------------------------------
         elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
@@ -563,33 +563,66 @@ class CUL extends T2DModule
     //internal functions
     //------------------------------------------------------------------------------
 
+    function swapEndianness($hex) {
+        return implode('', array_reverse(str_split($hex, 2)));
+    }
+
     //------------------------------------------------------------------------------
     /**
      * Parse Techem CUL Hex Record
      *
      * @code
-     * # For KS300:
-       # KFFTTHTWHWWRRFRSS
-     * # K1775910400E96AF4 :T: 17.5  H: 49  W: 0.0  R: 2793.0  IR: no  Wi: 0  RSSI: -86
-     * # For S300TH:
-     * # KAATTHTHHSS
-     * # K11245265
-     * # K41815177F4
-     * # 0123456789012345
-     * @endcode
-     * -AA Address,Type 1,2
-     * -T Temp Byteorder MSB 6,3,4
-     * -H Hum Byteorder MSB 7,8(,5)
-     * -W Wind Byteorder 9,10,7
-     * -R Raincounter Byteorder 14,11,12
-     * -F Flags 1,2,13
-     * -S Signal 15,16
+     * # For HKV
+     * # bLL446850IIIIIIIITTTTRRRRCC??111122223333444455556666????RRRR*
+     * # b32446850036852116980193CA0117E233400D0020E00DC081209030428630002000000000000000000000000000385A00000000206121102026C57
+     * @encode
+     * -b       literal for wireless M-Bus data
+     * -LL      length of message
+     * -4468    literal for start of message
+     * -50      literal for Techem
+     * -IIIIIIII device ID (reverse, e.g. 03685211 equals 11526803, 6803 shown on device display)
+     * -TTTT    device type (6980 = HKV, 7462 = Warmwater)
+     * -RRRR    CRC
+     * -CC      CI byte
+     * -??      Unknown
+     * -1111    Last reading date
+     * -2222    Last reading value
+     * -3333    Current reading date
+     * -4444    Current reading value
+     * -5555    Temperature 1
+     * -6666    Temperature 2
+     * -????    Unknown
+     * -RRRR    CRC
      *
      * Data must be read backwards
      * @param $line
      */
     private function parse_Techem($line)
     {
+
+        $data = array();
+        $data['Class'] = __CLASS__."-TECHEM";
+        $caps = "Id;Typ;DateLast;ValueLast;DateNow;ValueNow;";
+        $length = hexdec(substr($line, 1, 2));
+        $this->debug(__FUNCTION__, "TECHEM: length: $length");
+        $type = substr($line, 17, 4);
+        $addr = swapEndianness(substr($line, 9, 8));
+        $this->debug(__FUNCTION__, "TECHEM: address: $addr");
+        $data['Id'] = $addr;
+
+        switch ($type) {
+            case "6980": // Heizkostenverteiler
+                $data['Typ'] = "HKV";
+                break;
+            case "7462": // Hot water meter
+                $data['Typ'] = "HWM";
+                break;
+            default:
+                $this->debug(__FUNCTION__, "TECHEM: unknown type: $type");
+        }
+
+        $this->debug(__FUNCTION__, "TECHEM: type: ".$data['Typ']);
+
 /*
         $tlist = array("0" => "temp",
             "1" => "T/F",
