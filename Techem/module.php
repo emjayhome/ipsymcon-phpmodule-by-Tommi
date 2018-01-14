@@ -35,11 +35,11 @@ class TechemDev extends T2DModule
         'Name' => array("ident" => 'Name', "type" => self::VT_String, "name" => 'Name', 'profile' => '~String', "pos" => 0),
         'DateLast' => array("ident" => 'DateLast', "type" => self::VT_String, "name" => 'Last Readout', 'profile' => '~String', "pos" => 1),
         'ValueLast' => array("ident" => 'ValueLast', "type" => self::VT_Integer, "name" => 'Last Value', "profile" => '', "pos" => 2),
-        'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Last Value', "profile" => '', "pos" => 2),
+        'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Last Value', "profile" => 'Water.m3', "pos" => 2),
         'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Current Readout', 'profile' => '~String', "pos" => 3),
         'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Current Value', "profile" => '', "pos" => 4),
-        'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => '', "pos" => 4),
-        'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Total Value', "profile" => '', "pos" => 5),        
+        'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => 'Water.m3', "pos" => 4),
+        'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Total Value', "profile" => 'Water.m3', "pos" => 5),        
         'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 6),
         'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Heater Temperature', "profile" => '~Temperature', "pos" => 7),
         'Signal' => array("ident" => 'Signal', "type" => self::VT_Integer, "name" => 'Signal', 'profile' => 'Signal', "pos" => 40,"hidden" => true)
@@ -78,6 +78,7 @@ class TechemDev extends T2DModule
 
         //NonStandard Profiles (needed for Webfront)
         $this->check_profile('Signal', 1, "", " dB", "Gauge", -120, +10, 1, 0, false);
+        $this->check_profile('Water.m3', 2, " ", " m³", "Shower", null, null, null, 1, false);
     
         $this->CreateStatusVars();
     }//func
