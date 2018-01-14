@@ -606,6 +606,7 @@ class CUL extends T2DModule
         $length = hexdec(substr($line, 1, 2));
         $this->debug(__FUNCTION__, "TECHEM: length: $length");
         $type = substr($line, 17, 4);
+        $this->debug(__FUNCTION__, "TECHEM: type: $type");
         $addr = swapEndianness(substr($line, 9, 8));
         $this->debug(__FUNCTION__, "TECHEM: address: $addr");
         $data['Id'] = $addr;
