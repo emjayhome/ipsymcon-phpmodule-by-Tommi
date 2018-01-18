@@ -74,7 +74,7 @@ class TechemDev extends T2DModule
         $this->RegisterPropertyString('DeviceID', '');
         $this->RegisterPropertyString('Typ', '');
         $this->RegisterPropertyString('Class', '');
-        $this->RegisterPropertyString('Offset', '');
+        $this->RegisterPropertyString('Offset', '0');
         $this->RegisterPropertyString('CapList', '');
         $this->RegisterPropertyBoolean('Debug', false);
 
@@ -248,9 +248,17 @@ class TechemDev extends T2DModule
                 //int types
                 case 'Signal': //RSSI
                 case 'ValueLast':
-                case 'ValueNow':
                     $iv = (int)$s;
                     SetValueInteger($vid, $iv);
+                    break;
+                case 'ValueNow':
+                    $iv = (int)$s;
+                    $last=GetValueInteger($vid);
+                    $offset=(int)ReadPropertyString("Offset");
+                    if ($last!=$iv) {
+                        $iv=$iv+$offset;
+                        SetValueInteger($vid, $iv);
+                    }
                     break;
                 //float types
                 case 'Temp1':

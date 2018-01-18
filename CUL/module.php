@@ -643,7 +643,7 @@ class CUL extends T2DModule
         switch ($type) {
             case "6980": // Heizkostenverteiler
                 $data['Typ'] = "HKV";
-                $caps .= 'DateLast;ValueLast;DateNow;ValueNow;Temp1;Temp2;';
+                $caps .= 'DateLast;ValueLast;DateNow;ValueNow;ValueTotal;Temp1;Temp2;';
                 $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
@@ -1318,7 +1318,7 @@ class CUL extends T2DModule
         }//for
         if (!$found) {
             //no free instance available, have to create a new one
-            if($typ == "HWM") {
+            //if($typ == "HWM") {
                 if ($this->ReadPropertyBoolean('AutoCreate') == true) {
                     //new instance needed
                     $this->debug(__FUNCTION__, 'CREATE NEW Device');
@@ -1328,7 +1328,7 @@ class CUL extends T2DModule
                     $this->debug(__FUNCTION__, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
                     IPS_LogMessage($class, 'Creating Device ID ' . $id . ' disabled by Property AutoCreate');
                 }//if autocreate
-            }
+            //}
         }//if found
 
         if ($found && ($instID > 0)) {
