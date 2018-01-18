@@ -254,7 +254,7 @@ class TechemDev extends T2DModule
                 case 'ValueNow':
                     $iv = (int)$s;
                     $last=GetValueInteger($vid);
-                    $offset=(int)ReadPropertyString("Offset");
+                    $offset=(int)$this->ReadPropertyString("Offset");
                     if ($last!=$iv) {
                         $iv=$iv+$offset;
                         SetValueInteger($vid, $iv);
