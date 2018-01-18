@@ -254,11 +254,18 @@ class TechemDev extends T2DModule
                 case 'ValueNow':
                     $iv = (int)$s;
                     $last=GetValueInteger($vid);
-                    $offset=(int)$this->ReadPropertyString("Offset");
                     if ($last!=$iv) {
-                        $iv=$iv+$offset;
                         SetValueInteger($vid, $iv);
                     }
+                    $offset=(int)$this->ReadPropertyString("Offset");
+                    $totalid=$this->GetIDForIdent('ValueTotal');
+                    if($totalid) {
+                        $total=GetValueInteger($totalid);
+                        $totalnew=$iv+$offset;
+                        if ($total!=$totalnew) {
+                            SetValueInteger($totalid, $totalnew);
+                        } 
+                    } 
                     break;
                 //float types
                 case 'Temp1':
