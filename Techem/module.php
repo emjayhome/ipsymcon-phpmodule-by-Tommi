@@ -38,6 +38,7 @@ class TechemDev extends T2DModule
         'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Last Value', "profile" => 'Water.m3', "pos" => 2),
         'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Current Readout', 'profile' => '~String', "pos" => 3),
         'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Current Value', "profile" => '', "pos" => 4),
+        'ValueTotal' => array("ident" => 'ValueTotal', "type" => self::VT_Integer, "name" => 'Total Value', "profile" => '', "pos" => 5),
         'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => 'Water.m3', "pos" => 4),
         'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Total Value', "profile" => 'Water.m3', "pos" => 5),        
         'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 6),
@@ -73,6 +74,7 @@ class TechemDev extends T2DModule
         $this->RegisterPropertyString('DeviceID', '');
         $this->RegisterPropertyString('Typ', '');
         $this->RegisterPropertyString('Class', '');
+        $this->RegisterPropertyString('Offset', '');
         $this->RegisterPropertyString('CapList', '');
         $this->RegisterPropertyBoolean('Debug', false);
 
@@ -210,6 +212,16 @@ class TechemDev extends T2DModule
     private function GetClass()
     {
         return (String)IPS_GetProperty($this->InstanceID, 'Class');
+    }
+
+    //------------------------------------------------------------------------------
+    /**
+     * GetProperty offset
+     * @return string
+     */
+    private function GetOffset()
+    {
+        return (String)IPS_GetProperty($this->InstanceID, 'Offset');
     }
 
     //------------------------------------------------------------------------------

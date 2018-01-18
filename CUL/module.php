@@ -597,11 +597,11 @@ class CUL extends T2DModule
      * @code
      * 
      * # For HKV
-     * # bLL446850IIIIIIIITTTTRRRRCC??111122223333444455556666????RRRR*
+     * # bLL446850IIIIIIIITTTTRRRRCC??111122223333444455556666????RRRR...SS
      * # b32446850036852116980193CA0117E233400D0020E00DC081209030428630002000000000000000000000000000385A00000000206121102026C57
      * 
      * # For HWM
-     * # bLL446850IIIIIIIITTTTRRRRCC??1111222233334444????????????RRRR*
+     * # bLL446850IIIIIIIITTTTRRRRCC??1111222233334444????????????RRRR...SS
      * # b2F446850137325607462C518A2067E239101D002230000000D0A0A0D34C0060B090A090A0B0E090B0B0E0D0D0E0EF7D30A0F0D100D0AAA9E
      * 
      * @encode
@@ -622,7 +622,8 @@ class CUL extends T2DModule
      * -6666    Temperature 2
      * -????    Unknown
      * -RRRR    CRC
-     * -* ignore
+     * -... ignore
+     * -SS Signal
      * 
      *
      * Data must be read backwards
@@ -672,6 +673,11 @@ class CUL extends T2DModule
             default:
                 $this->debug(__FUNCTION__, "TECHEM: unknown type: $type");
         }
+
+        // Signal
+        $rssi=$this->GetSignal(substr($line,-2));
+        $caps.="Signal;";
+        $data['Signal']=$rssi;
 
         $this->SendTechemData($data, $caps);
     }//function TECHEM
