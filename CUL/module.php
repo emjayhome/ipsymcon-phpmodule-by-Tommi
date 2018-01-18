@@ -541,7 +541,7 @@ class CUL extends T2DModule
             } elseif (preg_match("/^(is[0-9A-F]{12})\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'IT response: ' . $line);
             } //------ Init messages --------------
-            elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|a-culfw|nanoCUL868).*/", $line, $res)) {
+            elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|nanoCUL434|nanoCUL868).*/", $line, $res)) {
                 $vers = $res[1];
                 $versid = $this->GetIDForIdent('Version');
                 if ($versid) SetValueString($versid,$vers);
