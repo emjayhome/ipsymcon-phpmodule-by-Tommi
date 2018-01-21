@@ -505,7 +505,7 @@ class CUL extends T2DModule
             $this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
             $this->debug(__FUNCTION__, 'Group1:' . $res[2]);
             $this->debug(__FUNCTION__, 'Group2:' . $res[3]);
-            $index = array_search($res[2], array_column($deviceListArr, 'DeviceID'));
+            $index = array_search($this->swapEndianness($res[2]), array_column($deviceListArr, 'DeviceID'));
             $type = $deviceListArr[$index]['DeviceType'];
             $this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
         } //---------------Techem HKV -------------------------------
