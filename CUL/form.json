@@ -9,6 +9,6 @@
 		{ "name": "AutoCreate", "type": "CheckBox", "caption": "Enable automatic creation of new devices" },
 		{ "type": "Label", "label": "--- Techem settings ---------" },
 		{ "name": "UseTechem", "type": "CheckBox", "caption": "Enable Techem reception" },
-		{ "name": "DeviceIDs", "type": "List", "caption": "Devices", "add": true, "delete": true, "columns": [{"label": "DeviceID", "name": "DeviceID", "width": "auto", "add": ""}]  }
+		{ "name": "DeviceIDs", "type": "List", "caption": "Devices", "add": true, "delete": true, "columns": [{"label": "DeviceID", "name": "DeviceID", "width": "auto", "add": "", "edit": {"type": "ValidationTextBox"}}]  }
 	]
 }
