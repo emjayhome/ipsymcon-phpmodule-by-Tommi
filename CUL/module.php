@@ -69,6 +69,7 @@ class CUL extends T2DModule
         $this->RegisterPropertyBoolean('Active', false);
         $this->RegisterPropertyBoolean('UseOW', false);
         $this->RegisterPropertyBoolean('UseTechem', false);
+        $this->RegisterPropertyString('TechemDeviceIDs', "");
         
         //status Vars
         $this->RegisterVariableString('LastUpdate', 'Last Update', "", -2);
