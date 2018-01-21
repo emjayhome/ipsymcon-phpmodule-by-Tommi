@@ -503,9 +503,9 @@ class CUL extends T2DModule
             $deviceListString = $this->ReadPropertyString("TechemDeviceIDs");
             $deviceListArr = json_decode($deviceListString, true);
             $this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
-            $this->debug(__FUNCTION__, 'Group1:' . $res[1]);
-            $this->debug(__FUNCTION__, 'Group2:' . $res[2]);
-            $index = array_search($res[1], array_column($deviceListArr, 'DeviceID'));
+            $this->debug(__FUNCTION__, 'Group1:' . $res[2]);
+            $this->debug(__FUNCTION__, 'Group2:' . $res[3]);
+            $index = array_search($res[2], array_column($deviceListArr, 'DeviceID'));
             $type = $deviceListArr[$index]['DeviceType'];
             $this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
         } //---------------Techem HKV -------------------------------
