@@ -86,7 +86,7 @@ class CUL extends T2DModule
         if (IPS_GetKernelRunlevel() == self::KR_READY) {
             if ($this->isActive()) {
                 $this->SetStatus(self::ST_AKTIV);
-                //$this->init();
+                $this->init();
             } else {
                 $this->SetStatus(self::ST_INACTIV);
             }
@@ -113,7 +113,7 @@ class CUL extends T2DModule
         parent::ApplyChanges();
         if ($this->isActive() && $this->HasActiveParent()) {
             $this->SetStatus(self::ST_AKTIV);
-            //$this->init();
+            $this->init();
         } else {
             $this->SetStatus(self::ST_INACTIV);
         }
