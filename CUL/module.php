@@ -508,7 +508,7 @@ class CUL extends T2DModule
             $index = array_search($this->swapEndianness($res[2]), array_column($deviceListArr, 'DeviceID'));
             $type = $deviceListArr[$index]['DeviceType'];
             $this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
-            if(($index!==0) && ($type==$this->swapEndianness($res[3]))) {
+            if(($index!==false) && ($type==$this->swapEndianness($res[3]))) {
                 $this->parse_Techem($res[0]);
             } 
         } //---------------Techem HKV -------------------------------
