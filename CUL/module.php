@@ -494,10 +494,22 @@ class CUL extends T2DModule
         $errors = GetValueInteger($errid);
         SetValueInteger($errid, 0);
 
-
         $this->debug(__FUNCTION__, "Line:$line");
-        //---------------Techem HKV-------------------------------
-        if (preg_match("/^(b..446850[\d]{8}6980.*)\s*\$/", $line, $res)) {
+        // Check Techem
+        
+        //---------------Techem Generic -------------------------------
+        if (preg_match("/^(b..446850)([\d]{8})([\d]{4}).*\s*\$/", $line, $res)) {
+            $this->debug(__FUNCTION__, 'Entered TECHEM Generic');
+            $deviceListString = $this->ReadPropertyString("TechemDeviceIDs");
+            $deviceListArr = json_decode($deviceListString, true);
+            $this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
+            $this->debug(__FUNCTION__, 'Group1:' . $res[1]);
+            $this->debug(__FUNCTION__, 'Group2:' . $res[2]);
+            $index = array_search($res[1], array_column($deviceListArr, 'DeviceID'));
+            $type = $deviceListArr[$index]['DeviceType'];
+            $this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
+        } //---------------Techem HKV -------------------------------
+        else if (preg_match("/^(b..446850[\d]{8}6980.*)\s*\$/", $line, $res)) {
             $num = mt_rand(1,100);
             if($num<=10) { // Process only 10% of incoming data to lower CPU load
                 $this->parse_Techem($res[1]);
