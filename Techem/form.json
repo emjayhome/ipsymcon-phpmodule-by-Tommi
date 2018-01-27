@@ -3,8 +3,7 @@
 	[
 		{ "name": "DeviceID", "type": "ValidationTextBox", "caption": "ID" },
 		{ "name": "Typ", "type": "ValidationTextBox", "caption": "Type" },
-		{ "name": "Class", "type": "ValidationTextBox", "caption": "Klasse" },
-		{ "name": "Offset", "type": "ValidationTextBox", "caption": "Offset" }
+		{ "name": "Class", "type": "ValidationTextBox", "caption": "Klasse" }
 	],
 	"actions":
 	[

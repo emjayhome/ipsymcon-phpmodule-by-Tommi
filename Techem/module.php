@@ -38,13 +38,14 @@ class TechemDev extends T2DModule
         'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Ablesewert', "profile" => 'Water.m3', "pos" => 2),
         'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Aktuelles Datum', 'profile' => '~String', "pos" => 3),
         'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Verbrauch', "profile" => '', "pos" => 4),
-        'ValueTotal' => array("ident" => 'ValueTotal', "type" => self::VT_Integer, "name" => 'Verbrauch Periode', "profile" => '', "pos" => 5),
+        'ValuePeriod' => array("ident" => 'ValuePeriod', "type" => self::VT_Integer, "name" => 'Verbrauch Periode', "profile" => '', "pos" => 5),
         'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Verbrauch', "profile" => 'Water.m3', "pos" => 4),
         'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Verbrauch Gesamt', "profile" => 'Water.m3', "pos" => 5),        
         'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Temperatur Umgebung', "profile" => '~Temperature', "pos" => 6),
         'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Temperatur Heizkörper', "profile" => '~Temperature', "pos" => 7),
         'TotalOffset' => array("ident" => 'TotalOffset', "type" => self::VT_Float, "name" => 'Offset Gesamt', 'profile' => 'Water.m3', "pos" => 20,"hidden" => true),
-        'PeriodOffset' => array("ident" => 'PeriodOffset', "type" => self::VT_Integer, "name" => 'Offset Periode', 'profile' => '', "pos" => 21,"hidden" => true),
+        'DateOffset' => array("ident" => 'DateOffset', "type" => self::VT_String, "name" => 'Start Periode', 'profile' => '~String', "pos" => 21,"hidden" => true),
+        'PeriodOffset' => array("ident" => 'PeriodOffset', "type" => self::VT_Integer, "name" => 'Offset Periode', 'profile' => '', "pos" => 22,"hidden" => true),
         'Signal' => array("ident" => 'Signal', "type" => self::VT_Integer, "name" => 'Signal', 'profile' => 'Signal', "pos" => 40,"hidden" => true)
     );
     ///[capvars]
@@ -218,16 +219,6 @@ class TechemDev extends T2DModule
 
     //------------------------------------------------------------------------------
     /**
-     * GetProperty offset
-     * @return string
-     */
-    private function GetOffset()
-    {
-        return (String)IPS_GetProperty($this->InstanceID, 'Offset');
-    }
-
-    //------------------------------------------------------------------------------
-    /**
      * handle incoming data along capabilities
      * @param array $data
      */
@@ -250,31 +241,15 @@ class TechemDev extends T2DModule
                 //int types
                 case 'Signal': //RSSI
                 case 'ValueLast':
-                    $iv = (int)$s;
-                    SetValueInteger($vid, $iv);
-                    break;
                 case 'ValueNow':
                     $iv = (int)$s;
-                    $last=GetValueInteger($vid);
-                    if ($last!=$iv) {
-                        SetValueInteger($vid, $iv);
-                    }
-                    $offset=(int)$this->ReadPropertyString("Offset");
-                    $totalid=$this->GetIDForIdent('ValueTotal');
-                    if($totalid) {
-                        $total=GetValueInteger($totalid);
-                        $totalnew=$iv+$offset;
-                        if ($total!=$totalnew) {
-                            SetValueInteger($totalid, $totalnew);
-                        } 
-                    } 
+                    SetValueInteger($vid, $iv);
                     break;
                 //float types
                 case 'Temp1':
                 case 'Temp2':
                 case 'ValueLastHWM':
                 case 'ValueNowHWM':
-                case 'ValueTotalHWM':
                     $fv = (float)$s;
                     SetValueFloat($vid, $fv);
                     break;
@@ -291,6 +266,83 @@ class TechemDev extends T2DModule
             }//switch
             $this->debug(__FUNCTION__, "$cap:($vid)=" . $s);
         }//for
+
+        // Update depended variables
+        switch($this->GetType()) {
+            case "HKV": // ValuePeriod
+                $ident = $caps["ValuePeriod"];
+                $vidValuePeriod = @$this->GetIDForIdent($ident);
+                if ($vidValuePeriod == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["DateLast"];
+                $vidDateLast = @$this->GetIDForIdent($ident);
+                if ($vidDateLast == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["ValueLast"];
+                $vidValueLast = @$this->GetIDForIdent($ident);
+                if ($vidValueLast == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["ValueNow"];
+                $vidValueNow = @$this->GetIDForIdent($ident);
+                if ($vidValueNow == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["DateOffset"];
+                $vidDateOffset = @$this->GetIDForIdent($ident);
+                if ($vidDateOffset == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["PeriodOffset"];
+                $vidPeriodOffset = @$this->GetIDForIdent($ident);
+                if ($vidPeriodOffset == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $dateLast = strtotime(GetValueString($vidDateLast));
+                $dateOffset = strtotime(GetValueString($vidDateOffset));
+                if($dateLast < $dateOffset) {
+                    SetValueInteger($vidValuePeriod, GetValueInteger($vidValueNow)-GetValueInteger($vidPeriodOffset));
+                } else {
+                    SetValueInteger($vidValuePeriod, GetValueInteger($vidValueLast)-GetValueInteger($vidPeriodOffset)+GetValueInteger($vidValueNow));
+                }
+                break;
+            case "HWM": // ValueTotalHMW
+                $ident = $caps["ValueTotalHMW"];
+                $vidValueTotalHMW = @$this->GetIDForIdent($ident);
+                if ($vidValueTotalHMW == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["ValueLastHMW"];
+                $vidValueLastHMW = @$this->GetIDForIdent($ident);
+                if ($vidValueLastHMW == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["ValueNowHMW"];
+                $vidValueNowHMW = @$this->GetIDForIdent($ident);
+                if ($vidValueNowHMW == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                $ident = $caps["TotalOffset"];
+                $vidTotalOffset = @$this->GetIDForIdent($ident);
+                if ($vidTotalOffset == 0) {
+                    $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
+                    return;
+                }
+                SetValueFloat($vidValueTotalHMW, GetValueFloat($vidValueLastHMW)+GetValueFloat($vidValueNowHMW)+GetValueFloat($vidTotalOffset));
+                break;
+            default:
+        }
     }//function
 
     //------------------------------------------------------------------------------
