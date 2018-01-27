@@ -499,15 +499,15 @@ class CUL extends T2DModule
         
         //---------------Techem Generic -------------------------------
         if (preg_match("/^(b..446850)([\d]{8})([\d]{4}).*\s*\$/", $line, $res)) {
-            $this->debug(__FUNCTION__, 'Entered TECHEM Generic');
+            //$this->debug(__FUNCTION__, 'Entered TECHEM Generic');
             $deviceListString = $this->ReadPropertyString("TechemDeviceIDs");
             $deviceListArr = json_decode($deviceListString, true);
-            $this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
-            $this->debug(__FUNCTION__, 'Group1:' . $res[2]);
-            $this->debug(__FUNCTION__, 'Group2:' . $res[3]);
+            //$this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
+            //$this->debug(__FUNCTION__, 'Group1:' . $res[2]);
+            //$this->debug(__FUNCTION__, 'Group2:' . $res[3]);
             $index = array_search($this->swapEndianness($res[2]), array_column($deviceListArr, 'DeviceID'));
             $type = $deviceListArr[$index]['DeviceType'];
-            $this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
+            //$this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
             if(($index!==false) && ($type==$this->swapEndianness($res[3]))) {
                 $this->parse_Techem($res[0]);
             } 
