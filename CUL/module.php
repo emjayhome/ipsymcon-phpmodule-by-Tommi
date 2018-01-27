@@ -659,7 +659,7 @@ class CUL extends T2DModule
         switch ($type) {
             case "6980": // Heizkostenverteiler
                 $data['Typ'] = "HKV";
-                $caps .= 'DateLast;ValueLast;DateNow;ValueNow;ValuePeriod;Temp1;Temp2;DateOffset;PeriodOffset';
+                $caps .= 'DateLast;ValueLast;DateNow;ValueNow;ValuePeriod;Temp1;Temp2;DateOffset;PeriodOffset;';
                 $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
@@ -675,7 +675,7 @@ class CUL extends T2DModule
                 break;
             case "7462": // Hot water meter
                 $data['Typ'] = "HWM";
-                $caps .= 'DateLast;ValueLastHWM;DateNow;ValueNowHWM;ValueTotalHWM;TotalOffset';
+                $caps .= 'DateLast;ValueLastHWM;DateNow;ValueNowHWM;ValueTotalHWM;TotalOffset;';
                 $raw_date_last = $this->swapEndianness(substr($line, 29, 4));
                 $raw_value_last = $this->swapEndianness(substr($line, 33, 4));
                 $raw_date_cur = $this->swapEndianness(substr($line, 37, 4));
