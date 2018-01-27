@@ -1,10 +1,15 @@
 {
 	"elements":
 	[
-		{ "name": "DeviceID", "type": "ValidationTextBox", "caption": "DeviceID" },
-		{ "name": "Typ", "type": "ValidationTextBox", "caption": "Typ" },
-		{ "name": "Class", "type": "ValidationTextBox", "caption": "Creator" },
+		{ "name": "DeviceID", "type": "ValidationTextBox", "caption": "ID" },
+		{ "name": "Typ", "type": "ValidationTextBox", "caption": "Type" },
+		{ "name": "Class", "type": "ValidationTextBox", "caption": "Klasse" },
 		{ "name": "Offset", "type": "ValidationTextBox", "caption": "Offset" }
+	],
+	"actions":
+	[
+		{ "type": "Label", "label": "Periode für HKV" },
+		{ "type": "Button", "label": "Start", "onClick": "TED_RestartPeriod($id);" }
 	]
 
 }

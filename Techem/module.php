@@ -33,16 +33,18 @@ class TechemDev extends T2DModule
     ///[capvars]
     protected $capvars = array(
         'Name' => array("ident" => 'Name', "type" => self::VT_String, "name" => 'Name', 'profile' => '~String', "pos" => 0),
-        'DateLast' => array("ident" => 'DateLast', "type" => self::VT_String, "name" => 'Last Readout', 'profile' => '~String', "pos" => 1),
-        'ValueLast' => array("ident" => 'ValueLast', "type" => self::VT_Integer, "name" => 'Last Value', "profile" => '', "pos" => 2),
-        'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Last Value', "profile" => 'Water.m3', "pos" => 2),
-        'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Current Readout', 'profile' => '~String', "pos" => 3),
-        'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Current Value', "profile" => '', "pos" => 4),
-        'ValueTotal' => array("ident" => 'ValueTotal', "type" => self::VT_Integer, "name" => 'Total Value', "profile" => '', "pos" => 5),
-        'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Current Value', "profile" => 'Water.m3', "pos" => 4),
-        'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Total Value', "profile" => 'Water.m3', "pos" => 5),        
-        'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Ambient Temperature', "profile" => '~Temperature', "pos" => 6),
-        'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Heater Temperature', "profile" => '~Temperature', "pos" => 7),
+        'DateLast' => array("ident" => 'DateLast', "type" => self::VT_String, "name" => 'Letzte Ablesung', 'profile' => '~String', "pos" => 1),
+        'ValueLast' => array("ident" => 'ValueLast', "type" => self::VT_Integer, "name" => 'Ablesewert', "profile" => '', "pos" => 2),
+        'ValueLastHWM' => array("ident" => 'ValueLastHWM', "type" => self::VT_Float, "name" => 'Ablesewert', "profile" => 'Water.m3', "pos" => 2),
+        'DateNow' => array("ident" => 'DateNow', "type" => self::VT_String, "name" => 'Aktuelles Datum', 'profile' => '~String', "pos" => 3),
+        'ValueNow' => array("ident" => 'ValueNow', "type" => self::VT_Integer, "name" => 'Verbrauch', "profile" => '', "pos" => 4),
+        'ValueTotal' => array("ident" => 'ValueTotal', "type" => self::VT_Integer, "name" => 'Verbrauch Periode', "profile" => '', "pos" => 5),
+        'ValueNowHWM' => array("ident" => 'ValueNowHWM', "type" => self::VT_Float, "name" => 'Verbrauch', "profile" => 'Water.m3', "pos" => 4),
+        'ValueTotalHWM' => array("ident" => 'ValueTotalHWM', "type" => self::VT_Float, "name" => 'Verbrauch Gesamt', "profile" => 'Water.m3', "pos" => 5),        
+        'Temp1' => array("ident" => 'Temp1', "type" => self::VT_Float, "name" => 'Temperatur Umgebung', "profile" => '~Temperature', "pos" => 6),
+        'Temp2' => array("ident" => 'Temp2', "type" => self::VT_Float, "name" => 'Temperatur Heizkörper', "profile" => '~Temperature', "pos" => 7),
+        'TotalOffset' => array("ident" => 'TotalOffset', "type" => self::VT_Float, "name" => 'Offset Gesamt', 'profile' => 'Water.m3', "pos" => 20,"hidden" => true),
+        'PeriodOffset' => array("ident" => 'PeriodOffset', "type" => self::VT_Integer, "name" => 'Offset Periode', 'profile' => '', "pos" => 21,"hidden" => true),
         'Signal' => array("ident" => 'Signal', "type" => self::VT_Integer, "name" => 'Signal', 'profile' => 'Signal', "pos" => 40,"hidden" => true)
     );
     ///[capvars]
@@ -290,4 +292,51 @@ class TechemDev extends T2DModule
             $this->debug(__FUNCTION__, "$cap:($vid)=" . $s);
         }//for
     }//function
+
+    //------------------------------------------------------------------------------
+    //---------public functions
+    //------------------------------------------------------------------------------
+    /**
+     * Initialize new peroid
+     * @return bool
+     */
+    public function RestartPeriod()
+    {
+        $res = false;
+        $caps = $this->GetCaps();
+        $type = $this->GetType();
+        $capPeriodOffset = 'PeriodOffset';
+        $capValueNow = 'ValueNow';
+        if (isset($caps[$capPeriodOffset]) && isset($caps[$capValueNow])) {
+            $identOffset = $caps[$capPeriodOffset];
+            $vidOffset = @$this->GetIDForIdent($identOffset);
+            if (!$vidOffset) {
+                IPS_LogMessage(__CLASS__, __FUNCTION__ . "::No vid for cap $cap('$identOffset')");
+                return $res;
+            }
+            $valOffset = GetValueInteger($vidOffset);
+            $identNow = $caps[$capValueNow];
+            $vidNow = @$this->GetIDForIdent($identNow);
+            if (!$vidNow) {
+                IPS_LogMessage(__CLASS__, __FUNCTION__ . "::No vid for cap $cap('$identNow')");
+                return $res;
+            }
+            $valNow = GetValueInteger($vidNow);           
+            switch ($type) {
+                case 'HKV':
+                    SetValueInteger($vidOffset, $valNow);
+                    $res = true;
+                    break;
+                default:
+                    IPS_LogMessage(__CLASS__, __FUNCTION__ . ": failed, not possible for $type");
+                    return $res;
+            }
+            $this->debug(__FUNCTION__, "$capPeriodOffset set to $valNow");
+        } else {
+            IPS_LogMessage(__CLASS__, __FUNCTION__ . "::failed, not capable for $type");
+        }
+        return $res;
+
+    }
+
 }//class
