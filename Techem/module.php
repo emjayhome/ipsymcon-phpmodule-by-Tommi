@@ -314,22 +314,22 @@ class TechemDev extends T2DModule
                     SetValueInteger($vidValuePeriod, GetValueInteger($vidValueLast)-GetValueInteger($vidPeriodOffset)+GetValueInteger($vidValueNow));
                 }
                 break;
-            case "HWM": // ValueTotalHMW
-                $ident = $caps["ValueTotalHMW"];
-                $vidValueTotalHMW = @$this->GetIDForIdent($ident);
-                if ($vidValueTotalHMW == 0) {
+            case "HWM": // ValueTotalHWM
+                $ident = $caps["ValueTotalHWM"];
+                $vidValueTotalHWM = @$this->GetIDForIdent($ident);
+                if ($vidValueTotalHWM == 0) {
                     $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
                     return;
                 }
-                $ident = $caps["ValueLastHMW"];
-                $vidValueLastHMW = @$this->GetIDForIdent($ident);
-                if ($vidValueLastHMW == 0) {
+                $ident = $caps["ValueLastHWM"];
+                $vidValueLastHWM = @$this->GetIDForIdent($ident);
+                if ($vidValueLastHWM == 0) {
                     $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
                     return;
                 }
-                $ident = $caps["ValueNowHMW"];
-                $vidValueNowHMW = @$this->GetIDForIdent($ident);
-                if ($vidValueNowHMW == 0) {
+                $ident = $caps["ValueNowHWM"];
+                $vidValueNowHWM = @$this->GetIDForIdent($ident);
+                if ($vidValueNowHWM == 0) {
                     $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
                     return;
                 }
@@ -339,7 +339,7 @@ class TechemDev extends T2DModule
                     $this->debug(__FUNCTION__, "Cap $cap Ident $ident: Variable missed");
                     return;
                 }
-                SetValueFloat($vidValueTotalHMW, GetValueFloat($vidValueLastHMW)+GetValueFloat($vidValueNowHMW)+GetValueFloat($vidTotalOffset));
+                SetValueFloat($vidValueTotalHWM, GetValueFloat($vidValueLastHWM)+GetValueFloat($vidValueNowHWM)+GetValueFloat($vidTotalOffset));
                 break;
             default:
         }
