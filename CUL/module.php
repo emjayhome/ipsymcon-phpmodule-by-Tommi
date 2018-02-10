@@ -333,6 +333,7 @@ class CUL extends T2DModule
         } else {
             IPS_LogMessage(__CLASS__, "Techem filter reset failed");
         }
+        /*
         // Setup filter
         $this->SendText("bfs5004685211\r\n");
         IPS_Sleep(100);
@@ -341,7 +342,7 @@ class CUL extends T2DModule
             $this->debug(__FUNCTION__, "Techem filter setup successful");
         } else {
             IPS_LogMessage(__CLASS__, "Techem filter setup failed");
-        }
+        }*/
 
         //query actual Modus 
         $this->SendText("br\r\n");
@@ -539,15 +540,6 @@ class CUL extends T2DModule
             if(($index!==false) && ($type==$this->swapEndianness($res[3]))) {
                 $this->parse_Techem($res[0]);
             } 
-        // } //---------------Techem HKV -------------------------------
-        // else if (preg_match("/^(b..446850[\d]{8}6980.*)\s*\$/", $line, $res)) {
-        //     $num = mt_rand(1,100);
-        //     if($num<=10) { // Process only 10% of incoming data to lower CPU load
-        //         $this->parse_Techem($res[1]);
-        //     }
-        // } //---------------Techem HWM-------------------------------
-        // elseif (preg_match("/^(b..446850[\d]{8}7462.*)\s*\$/", $line, $res)) {
-        //     $this->parse_Techem($res[1]);
         } //---------------EM1000-----------------------------------
         elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
             $this->parse_EM1000($res[1]);
@@ -584,6 +576,9 @@ class CUL extends T2DModule
             // IT response
             } elseif (preg_match("/^(is[0-9A-F]{12})\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'IT response: ' . $line);
+            // Techem status messages
+            } elseif (preg_match("/^(TMODE)\s*/", $line, $res)) {
+                $this->debug(__FUNCTION__, 'Techem status: ' . $line);
             // Techem filter status messages
             } elseif (preg_match("/^(FILTER )(.*)\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem filter status: ' . $res[1]);
