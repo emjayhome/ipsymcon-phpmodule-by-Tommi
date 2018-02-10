@@ -213,6 +213,8 @@ class CUL extends T2DModule
         //get message variable
         $lmid = $this->GetIDForIdent('AuxMessage');
         //Status variables
+        $errid = $this->GetIDForIdent('Errors');
+        $errors = GetValueInteger($errid);
         $mid = $this->GetIDForIdent('Modus');
         $versid = $this->GetIDForIdent('Version');
         SetValueString($mid, ""); //reset status variable
@@ -224,6 +226,12 @@ class CUL extends T2DModule
   
         //retrieve Techem property
         $use_techem = $this->GetUseTechem();
+
+        // Reset in case of errors
+        if($errors > 1) {
+            $this->SendText("B00\r\n");
+            IPS_Sleep(1000);
+        }
 
         //query actual Modus 
         $this->SendText("X\r\n");
@@ -572,7 +580,7 @@ class CUL extends T2DModule
                 $errors = $errors + 1;
                 $this->debug(__FUNCTION__, 'Err:' . $errors . ' MSG:' . $line . "Len:" . strlen($line) . " Hex:" . strToHex($line));
                 SetValueInteger($errid, $errors);
-                if ($errors > 10) {
+                if ($errors > 1) {
                     //to many errors, reset COC
                     $this->init();
 
