@@ -77,6 +77,7 @@ class SwitchDev extends T2DModule
         $this->RegisterPropertyString('DeviceID', '');
         $this->RegisterPropertyString('Typ', '');
         $this->RegisterPropertyString('Class', '');
+        $this->RegisterPropertyBoolean('RXonly', false);
         $this->RegisterPropertyString('CapList', '');
         $this->RegisterPropertyBoolean('Debug', false);
 
@@ -247,6 +248,15 @@ class SwitchDev extends T2DModule
         return (String)IPS_GetProperty($this->InstanceID, 'Class');
     }
 
+    //------------------------------------------------------------------------------
+    /**
+     * GetProperty RX only
+     * @return boolean
+     */
+    private function GetRxOnly()
+    {
+        return (Boolean)IPS_GetProperty($this->InstanceID, 'RXonly');
+    }
 
 
     //------------------------------------------------------------------------------
@@ -567,6 +577,12 @@ class SwitchDev extends T2DModule
 
         if (!$this->HasActiveParent()) {
             IPS_LogMessage(__CLASS__, __FUNCTION__ . "Parent not active, No real Action");
+            return $res;
+        }
+
+        if(GetRxOnly()) {
+            // For receivers do not send
+            $res = true;
             return $res;
         }
 
