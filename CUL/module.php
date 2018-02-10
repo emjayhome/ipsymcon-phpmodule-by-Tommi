@@ -337,7 +337,7 @@ class CUL extends T2DModule
         $this->SendText("bfs5004685211\r\n");
         IPS_Sleep(100);
         $data = GetValueString($lmid);
-        if ($stats == "f5004685211") {
+        if ($status == "f5004685211") {
             $this->debug(__FUNCTION__, "Techem filter setup successful");
         } else {
             IPS_LogMessage(__CLASS__, "Techem filter setup failed");
