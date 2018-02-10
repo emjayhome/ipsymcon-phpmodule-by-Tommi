@@ -580,7 +580,7 @@ class SwitchDev extends T2DModule
             return $res;
         }
 
-        if(GetRxOnly()) {
+        if($this->GetRxOnly()) {
             // For receivers do not send
             $res = true;
             return $res;
