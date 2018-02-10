@@ -323,15 +323,35 @@ class CUL extends T2DModule
         //get message variable
         $lmid = $this->GetIDForIdent('AuxMessage');
 
+        // Setup filter
+        // Reset filter
+        $this->SendText("bfr\r\n");
+        IPS_Sleep(100);
+        $status = GetValueString($lmid);
+        if ($status == "RESET") {
+            $this->debug(__FUNCTION__, "Techem filter reset successful");
+        } else {
+            IPS_LogMessage(__CLASS__, "Techem filter reset failed");
+        }
+        // Setup filter
+        $this->SendText("bfs5004685211\r\n");
+        IPS_Sleep(100);
+        $data = GetValueString($lmid);
+        if ($stats == "f5004685211") {
+            $this->debug(__FUNCTION__, "Techem filter setup successful");
+        } else {
+            IPS_LogMessage(__CLASS__, "Techem filter setup failed");
+        }
+
         //query actual Modus 
         $this->SendText("br\r\n");
-        IPS_Sleep(1000);
+        IPS_Sleep(100);
         $modus = GetValueString($lmid);
         if ($modus <> "TMODE") {
             //send command for wireless M-BUS T mode 
             SetValueString($lmid, "");
             $this->SendText("brt\r\n");
-            IPS_Sleep(1000);
+            IPS_Sleep(100);
             //Modus abfragen
             //$this->SendText("\r\n");
             //IPS_Sleep(1000);
@@ -564,6 +584,13 @@ class CUL extends T2DModule
             // IT response
             } elseif (preg_match("/^(is[0-9A-F]{12})\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'IT response: ' . $line);
+            // Techem filter status messages
+            } elseif (preg_match("/^(FILTER )(.*)\s*/", $line, $res)) {
+                $this->debug(__FUNCTION__, 'Techem filter status: ' . $res[1]);
+                SetValueString($lmid, $res[1]);
+            // Techem filter messages
+            } elseif (preg_match("/^(f[0-9A-Fa-f]{10})\s*/", $line, $res)) {
+                $this->debug(__FUNCTION__, 'Techem filter: ' . $line);
             } //------ Init messages --------------
             elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|nanoCUL433|nanoCUL868).*/", $line, $res)) {
                 $vers = $res[1];
