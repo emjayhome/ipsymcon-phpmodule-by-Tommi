@@ -579,6 +579,10 @@ class CUL extends T2DModule
             // Techem status messages
             } elseif (preg_match("/^(TMODE)\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem status: ' . $line);
+                $modus = $line;
+                $mid = $this->GetIDForIdent('Modus');
+                if ($mid) SetValueString($mid,$modus);
+                $this->debug(__FUNCTION__, 'Modus:' . $modus);
             // Techem filter status messages
             } elseif (preg_match("/^(FILTER )(.*)\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem filter status: ' . $res[1]);
@@ -586,10 +590,6 @@ class CUL extends T2DModule
             // Techem filter messages
             } elseif (preg_match("/^(f[0-9A-Fa-f]{10})\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem filter: ' . $line);
-                $modus = $line;
-                $mid = $this->GetIDForIdent('Modus');
-                if ($mid) SetValueString($mid,$modus);
-                $this->debug(__FUNCTION__, 'Modus:' . $modus);
             } //------ Init messages --------------
             elseif (preg_match("/^(V\s*[0-9\.]+)\s*(?:CSM|CUL|nanoCUL433|nanoCUL868).*/", $line, $res)) {
                 $vers = $res[1];
