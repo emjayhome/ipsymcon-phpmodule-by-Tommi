@@ -333,16 +333,22 @@ class CUL extends T2DModule
         } else {
             IPS_LogMessage(__CLASS__, "Techem filter reset failed");
         }
-        /*
+
         // Setup filter
-        $this->SendText("bfs5004685211\r\n");
-        IPS_Sleep(100);
-        $data = GetValueString($lmid);
-        if ($status == "f5004685211") {
-            $this->debug(__FUNCTION__, "Techem filter setup successful");
-        } else {
-            IPS_LogMessage(__CLASS__, "Techem filter setup failed");
-        }*/
+        $deviceListString = $this->ReadPropertyString("TechemDeviceIDs");
+        $deviceListArr = json_decode($deviceListString, true);
+        $deviceIdList = array_column($deviceListArr, 'DeviceID');
+        foreach($deviceIdList as $deviceId) {
+            $this->debug(__FUNCTION__, "Command: bfs"."50".$this->swapEndianness($deviceId));
+            $this->SendText("bfs"."50".$this->swapEndianness($deviceId)."\r\n");
+            IPS_Sleep(100);
+            $data = GetValueString($lmid);
+            if ($status == "f"."50".swapEndianness($deviceId)) {
+                $this->debug(__FUNCTION__, "Techem filter setup successful");
+            } else {
+                IPS_LogMessage(__CLASS__, "Techem filter setup failed");
+            }
+        }
 
         //query actual Modus 
         $this->SendText("br\r\n");
@@ -528,18 +534,7 @@ class CUL extends T2DModule
         
         //---------------Techem Generic -------------------------------
         if (preg_match("/^(b..446850)([\d]{8})([\d]{4}).*\s*\$/", $line, $res)) {
-            //$this->debug(__FUNCTION__, 'Entered TECHEM Generic');
-            $deviceListString = $this->ReadPropertyString("TechemDeviceIDs");
-            $deviceListArr = json_decode($deviceListString, true);
-            //$this->debug(__FUNCTION__, 'Array:' . $deviceListArr);
-            //$this->debug(__FUNCTION__, 'Group1:' . $res[2]);
-            //$this->debug(__FUNCTION__, 'Group2:' . $res[3]);
-            $index = array_search($this->swapEndianness($res[2]), array_column($deviceListArr, 'DeviceID'));
-            $type = $deviceListArr[$index]['DeviceType'];
-            //$this->debug(__FUNCTION__, 'Index: ' . $index . " Type: " . $type);
-            if(($index!==false) && ($type==$this->swapEndianness($res[3]))) {
-                $this->parse_Techem($res[0]);
-            } 
+            $this->parse_Techem($res[0]);
         } //---------------EM1000-----------------------------------
         elseif (preg_match("/^(E[0-9A-F]{18,20})\s*\$/", $line, $res)) {
             $this->parse_EM1000($res[1]);

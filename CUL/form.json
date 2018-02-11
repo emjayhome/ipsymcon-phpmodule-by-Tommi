@@ -11,7 +11,6 @@
 		{ "name": "UseTechem", "type": "CheckBox", "caption": "Enable Techem reception" },
 		{ "name": "TechemDeviceIDs", "type": "List", "caption": "Devices", "add": true, "delete": true, "columns": [
 			{"label": "Device Name", "name": "DeviceName", "width": "auto", "add": "", "edit": {"type": "ValidationTextBox"}},
-			{"label": "Device ID", "name": "DeviceID", "width": "100px", "add": "", "edit": {"type": "ValidationTextBox"}},
-			{"label": "Device Type", "name": "DeviceType", "width": "100px", "add": "", "edit": {"type": "ValidationTextBox"}}] }
+			{"label": "Device ID", "name": "DeviceID", "width": "100px", "add": "", "edit": {"type": "ValidationTextBox"}}] }
 	]
 }
