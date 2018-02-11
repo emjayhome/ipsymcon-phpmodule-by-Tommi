@@ -323,7 +323,6 @@ class CUL extends T2DModule
         //get message variable
         $lmid = $this->GetIDForIdent('AuxMessage');
 
-        // Setup filter
         // Reset filter
         $this->SendText("bfr\r\n");
         IPS_Sleep(100);
@@ -577,7 +576,7 @@ class CUL extends T2DModule
             // Techem filter status messages
             } elseif (preg_match("/^(FILTER )(.*)\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem filter status: ' . $res[1]);
-                SetValueString($lmid, $res[1]);
+                SetValueString($lmid, $res[2]);
             // Techem filter messages
             } elseif (preg_match("/^(f[0-9A-Fa-f]{10})\s*/", $line, $res)) {
                 $this->debug(__FUNCTION__, 'Techem filter: ' . $line);
