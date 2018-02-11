@@ -274,6 +274,12 @@ class CUL extends T2DModule
             $this->init_techem();
         }
 
+        if($version) {
+            $datum = date('Y-m-d H:i:s', time());
+            $vid = @$this->GetIDForIdent('LastUpdate');
+            if ($vid) SetValueString($vid, $datum);
+        }
+
         $this->debug(__FUNCTION__, "Version:$version, Modus: $modus");
         $this->SetLocalBuffer('');
 
