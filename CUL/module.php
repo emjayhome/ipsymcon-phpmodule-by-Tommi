@@ -342,7 +342,7 @@ class CUL extends T2DModule
             $this->SendText("bfs"."50".$this->swapEndianness($deviceId)."\r\n");
             IPS_Sleep(100);
             $data = GetValueString($lmid);
-            if ($status == "f"."50".$this->swapEndianness($deviceId)) {
+            if ($data == "f"."50".$this->swapEndianness($deviceId)) {
                 $this->debug(__FUNCTION__, "Techem filter setup successful");
             } else {
                 IPS_LogMessage(__CLASS__, "Techem filter setup failed");
