@@ -602,6 +602,9 @@ class CUL extends T2DModule
                 if ($mid) SetValueString($mid,$modus);
                 $this->debug(__FUNCTION__, 'Modus:' . $modus);
                 //--------- Error -------------
+            } //------------------Mask IT/Elro Error---------------------------------
+            elseif (preg_match("/^(i[0-9A-F]{7})\s*/", $line, $res)) {
+                $this->debug(__FUNCTION__, 'Unknown IT data:' . $line);
             } else {
                 $errors = $errors + 1;
                 $this->debug(__FUNCTION__, 'Err:' . $errors . ' MSG:' . $line . "Len:" . strlen($line) . " Hex:" . strToHex($line));
