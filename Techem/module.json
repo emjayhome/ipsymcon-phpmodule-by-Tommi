@@ -6,7 +6,7 @@
 	"aliases": ["Techem Device"],
 	"parentRequirements": [],
 	"childRequirements": [],
-	"implemented": ["{89f5c46c-f96a-4551-ae4e-71f880f57584}"],
+	"implemented": ["{89F5C46C-F96A-4551-AE4E-71F880F57584}"],
 	"prefix": "TED"
 }
 

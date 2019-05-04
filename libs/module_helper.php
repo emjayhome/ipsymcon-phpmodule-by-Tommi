@@ -165,7 +165,7 @@ class T2DModule extends IPSModule
         "IO-TX" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", //to VirtIO
         "EN-TX" => "{63056B9B-EF14-4F65-8235-D292391AE591}", //from Energy Device
         "EN-RX" => "{3C60BF34-7DD3-4234-B865-AF1606BB267C}", //to Energy Device
-        "TE-RX" => "{89f5c46c-f96a-4551-ae4e-71f880f57584}", // to Techem Device
+        "TE-RX" => "{89F5C46C-F96A-4551-AE4E-71F880F57584}", // to Techem Device
     );
 
     /**
