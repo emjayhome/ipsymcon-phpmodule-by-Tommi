@@ -152,7 +152,7 @@ class T2DModule extends IPSModule
         "WSDEV" => "{4228137D-EDE3-41BF-9B0A-CA0DB1AC6353}", // WS Device
         "SwitchDev" => "{F2FC0924-2CE9-4067-9DB5-D228F0CCF4AD}", //Switch Device
         "EnergyDev" => "{F0302960-A22D-40CC-8994-B7C40F045023}", //Energy Device
-        "TechemDev" => "{c90288df-3938-4e1c-9758-a46dfced60f3}", // Techem Device
+        "TechemDev" => "{C90288DF-3938-4E1C-9758-A46DFCED60F3}", // Techem Device
 
         //Data Points
         "FS20-TX" => "{122F60FB-BE1B-4CAB-A427-2613E4C82CBA}", //from FS20 Device
