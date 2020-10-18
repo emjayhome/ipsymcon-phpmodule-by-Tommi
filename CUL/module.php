@@ -1181,7 +1181,9 @@ class CUL extends T2DModule
         $firstbyte = hexdec($a[1]);
         $typebyte = $a[2];
         $dev = (string)($firstbyte & 7);
-        $typid = $tlist[$typebyte];
+        if(isset($tlist[$typebyte])) {
+            $typid = $tlist[$typebyte];
+        } else 
         $typebyte = $typebyte & 7;
         $varids = null;
         $val = "no data";
@@ -1266,7 +1268,7 @@ class CUL extends T2DModule
                 $this->debug(__FUNCTION__, "WS300: Invalid record: $line");
             }
         }
-        if (!$data['Typ']) $data['Typ'] = ($typid ? $typid : 'unknown');
+        if (isset($data['Typ']) && !$data['Typ']) $data['Typ'] = ($typid ? $typid : 'unknown');
         $text = "Dev $dev ($typid): $val";
         $this->debug(__FUNCTION__, "WS300:" . $text);
         $this->SendWSData($data, $caps);
