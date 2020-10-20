@@ -1183,7 +1183,9 @@ class CUL extends T2DModule
         $dev = (string)($firstbyte & 7);
         if(isset($tlist[$typebyte])) {
             $typid = $tlist[$typebyte];
-        } else 
+        } else {
+            $typid = "temp";
+        }
         $typebyte = $typebyte & 7;
         $varids = null;
         $val = "no data";
