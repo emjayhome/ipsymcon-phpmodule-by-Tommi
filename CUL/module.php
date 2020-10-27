@@ -554,7 +554,7 @@ class CUL extends T2DModule
             $this->parse_IT($res[1]);
         } //---------------------Wetter(WS300)-----------------------------------------
         elseif (preg_match("/^(K[0-9A-F]{6,16})\s*\$/", $line, $res)) {
-            $this->parse_WS300($res[1]);
+            //$this->parse_WS300($res[1]);
         } //--------------------HMS-------------------------------------------------------
         elseif (preg_match("/^(H[0-9A-F]{12,14})\s*\$/", $line, $res)) {
             $this->parse_HMS($res[1]);
